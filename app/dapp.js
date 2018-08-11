@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Tabs, Layout } from 'antd';
-import 'antd/dist/antd.css';
+import { Tabs, Layout, Menu } from 'antd';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 const Tab = Tabs.TabPane;
 const { Header, Content, Footer } = Layout;
@@ -9,8 +9,12 @@ const { Header, Content, Footer } = Layout;
 import EmbarkJS from 'Embark/EmbarkJS';
 import Blockchain from './components/blockchain';
 import Storage from './components/storage';
+import CreateSurvey from './components/createSurvey';
+import ViewSurveys from './components/viewSurverys';
+import Home from './components/home';
 
 import './dapp.css';
+import 'antd/dist/antd.css';
 
 class App extends React.Component {
 
@@ -53,28 +57,34 @@ class App extends React.Component {
 
   render(){
     return (
-      <Layout className="layout">
-        <Header>
-          <div className="logo">
-            Survey
-          </div>
-        </Header>
-        <Content style={{ padding: '0 15%' }}>
-          <div style={{ background: '#fff', padding: 24, minHeight: '86vh' }}>
-          <Tabs defaultActiveKey="1" id="uncontrolled-tab-example">
-            <Tab eventKey={1} tab="Blockchain" key="1">
-              <Blockchain />
-            </Tab>
-            <Tab eventKey={2} tab={this._renderStatus('Decentralized Storage', this.state.storageEnabled)} key="2">
-              <Storage enabled={this.state.storageEnabled} />
-            </Tab>
-          </Tabs>
-          </div>
-        </Content>
-        <Footer style={{ textAlign: 'center' }}>
-          Survey
-        </Footer>
-      </Layout>
+      <Router>
+        <Layout className="layout">
+          <Header>
+            <div className="logo">
+              Survey
+            </div>
+              <Menu
+                theme="dark"
+                mode="horizontal"
+                defaultSelectedKeys={['1']}
+                style={{ lineHeight: '64px' }}
+              >
+                <Menu.Item key="5"><Link to="/storage">Storage</Link></Menu.Item>
+                <Menu.Item key="4"><Link to="/blockchain">Blockchain</Link></Menu.Item>
+                <Menu.Item key="3"><Link to="/view">Topics</Link></Menu.Item>
+                <Menu.Item key="2"><Link to="/create">About</Link></Menu.Item>
+                <Menu.Item key="1"><Link to="/">Home</Link></Menu.Item>
+              </Menu>
+          </Header>
+          <Content className="container">
+            <Route exact path="/" component={Home} />
+            <Route path="/create" component={CreateSurvey} />
+            <Route path="/view" component={ViewSurveys} />
+            <Route path="/blockchain" component={Blockchain} />
+            <Route path="/storage" component={Storage} />
+          </Content>
+        </Layout>
+      </Router>
     );
   }
 }

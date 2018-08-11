@@ -31,6 +31,26 @@
       "0xa72e15b4fc637528e678fdcab66f178b753f609a6d2a66564f1676fde4d51ed3": {
         "name": "SimpleStorage",
         "address": "0x10Aa1c9C2ad79b240Dc612cd2c0c0f5513bAfF28"
+      },
+      "0xa16b5044fdcdc1c105df3939b857f9be81f4abae54875bde0db50f2dba48cd9f": {
+        "name": "Survey",
+        "address": "0x8B9AF00A6D29E7D687610E9dDB022c496DB551dE"
+      },
+      "0x53696c46286a8d5002996250765b0b12bdf4e3fcb0fe98bfc4648f2297118371": {
+        "name": "strings",
+        "address": "0x494748735312D87C54Ff36E9dc71f90fb800D7Df"
+      },
+      "0x572c30425268893d9264f4f1c477dc8d06b9c6f7158477bc27d733a29141fbc8": {
+        "name": "SafeMath",
+        "address": "0xe5731c3df7a510fba6c5b2766251ce631C6B1d78"
+      },
+      "0x2606c76b2e18106a52e6aadd990e98cfd519332600f88ee45101918671e84bb9": {
+        "name": "BasicToken",
+        "address": "0x6427A6200Bed37FC1e512BdeA49D25Aa9089CF47"
+      },
+      "0x916a589aeff74785b65b9748bcefc008f9c3a41a46b2b1b9dbc1651abe91003a": {
+        "name": "StandardToken",
+        "address": "0x8C74e6cCd38c8B61B874B0514577206a0b8Dab98"
       }
     }
   },

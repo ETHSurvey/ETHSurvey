@@ -88,4 +88,4 @@ class Blockchain extends React.Component {
     }
   }
 
-  export default Blockchain;
+export default Blockchain;
