@@ -1,5 +1,4 @@
 import EmbarkJS from 'Embark/EmbarkJS';
-import SimpleStorage from 'Embark/contracts/SimpleStorage';
 import React from 'react';
 
 

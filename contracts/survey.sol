@@ -1,10 +1,8 @@
 import "zeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
-import "./strings.sol";
 
 pragma solidity ^0.4.23;
 
 contract Survey {
-    using strings for *;
 
     // ------- Struct for holding surveyees ---
     struct surveyee {
@@ -16,6 +14,7 @@ contract Survey {
     // ------- Struct for holding surveys ---
     struct survey {
         uint amount;
+        unit numResponses;
         address surveyOwner;
         uint creationTime;
         uint expirationTime;
@@ -40,6 +39,7 @@ contract Survey {
     function createSurvey(
         string memory _name,
         uint _amount,
+        uint _numResponses,
         address _tokenAddress,
         uint _expirationTimeDelta,
         string memory _hash
@@ -63,6 +63,7 @@ contract Survey {
         // create survey
         survey storage s;
         s.amount = _amount;
+        s.numResponses = _numResponses;
         s.surveyOwner = msg.sender;
         s.creationTime = now;
         s.expirationTime = now + _expirationTimeDelta;

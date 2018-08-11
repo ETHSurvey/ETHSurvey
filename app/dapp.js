@@ -29,14 +29,14 @@ class App extends React.Component {
 
   componentDidMount(){ 
     EmbarkJS.onReady(() => {
-      if (EmbarkJS.isNewWeb3()) {
+      /*if (EmbarkJS.isNewWeb3()) {
         EmbarkJS.Messages.Providers.whisper.getWhisperVersion((err, version) => { 
           if(!err)
               this.setState({whisperEnabled: true})
             else
               console.log(err);
         });
-      }
+      }*/
 
       this.setState({
         storageEnabled: true
