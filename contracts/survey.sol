@@ -14,7 +14,7 @@ contract Survey {
     // ------- Struct for holding surveys ---
     struct survey {
         uint amount;
-        unit numResponses;
+        uint numResponses;
         address surveyOwner;
         uint creationTime;
         uint expirationTime;

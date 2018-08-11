@@ -21,7 +21,7 @@ class Blockchain extends React.Component {
 
   setValue(e) {
     e.preventDefault();
-    
+
     console.log(this.state.valueSet);
 
     // If web3.js 1.0 is being used
