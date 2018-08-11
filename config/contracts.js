@@ -32,7 +32,7 @@ module.exports = {
     ],
     gas: "auto",
     contracts: {
-      SimpleStorage: {
+      Survey: {
         fromIndex: 0,
         args: [100]
       }
