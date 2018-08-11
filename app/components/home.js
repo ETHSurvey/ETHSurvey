@@ -12,7 +12,7 @@ class CreateSurvey extends React.Component {
   
     render(){
       return (
-          <h3> Home page </h3>
+          <h3> Surveys, Decentralized & Incentivised! </h3>
       );
     }
   }

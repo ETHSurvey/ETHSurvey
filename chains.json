@@ -1,0 +1,117 @@
+{
+  "0x8f4e10997eb00209ef7e72cf9a387f5debc94d6c89e7a090ed757a85f112a62b": {
+    "contracts": {
+      "0xa72e15b4fc637528e678fdcab66f178b753f609a6d2a66564f1676fde4d51ed3": {
+        "name": "SimpleStorage",
+        "address": "0x04D45b51fe4f00b4478F8b0719Fa779f14c8A194"
+      }
+    }
+  },
+  "0x2ed3fe5b0865f8713918b1445ced9071572e83c784d7f1cfb5ffa9a482076b81": {
+    "contracts": {
+      "0xa72e15b4fc637528e678fdcab66f178b753f609a6d2a66564f1676fde4d51ed3": {
+        "name": "SimpleStorage",
+        "address": "0x04D45b51fe4f00b4478F8b0719Fa779f14c8A194"
+      }
+    }
+  },
+  "0x69316789746c2bacad8e4e047f1b2aa3e74b6144390b9c7e8b78cadc74677aef": {
+    "contracts": {
+      "0xa72e15b4fc637528e678fdcab66f178b753f609a6d2a66564f1676fde4d51ed3": {
+        "name": "SimpleStorage",
+        "address": "0x10Aa1c9C2ad79b240Dc612cd2c0c0f5513bAfF28"
+      }
+    }
+  },
+  "0x1669ed796f88978d14c650e1d43a8d5c33979899d95cf7aaa4997ce40d9c6dc7": {
+    "contracts": {}
+  },
+  "0xf8d65dd881675578021ca190d8d566e1392196d7f53a29e1466ed511f36d3c83": {
+    "contracts": {
+      "0xa72e15b4fc637528e678fdcab66f178b753f609a6d2a66564f1676fde4d51ed3": {
+        "name": "SimpleStorage",
+        "address": "0x10Aa1c9C2ad79b240Dc612cd2c0c0f5513bAfF28"
+      },
+      "0xa16b5044fdcdc1c105df3939b857f9be81f4abae54875bde0db50f2dba48cd9f": {
+        "name": "Survey",
+        "address": "0x8B9AF00A6D29E7D687610E9dDB022c496DB551dE"
+      },
+      "0x53696c46286a8d5002996250765b0b12bdf4e3fcb0fe98bfc4648f2297118371": {
+        "name": "strings",
+        "address": "0x494748735312D87C54Ff36E9dc71f90fb800D7Df"
+      },
+      "0x572c30425268893d9264f4f1c477dc8d06b9c6f7158477bc27d733a29141fbc8": {
+        "name": "SafeMath",
+        "address": "0xe5731c3df7a510fba6c5b2766251ce631C6B1d78"
+      },
+      "0x2606c76b2e18106a52e6aadd990e98cfd519332600f88ee45101918671e84bb9": {
+        "name": "BasicToken",
+        "address": "0x6427A6200Bed37FC1e512BdeA49D25Aa9089CF47"
+      },
+      "0x916a589aeff74785b65b9748bcefc008f9c3a41a46b2b1b9dbc1651abe91003a": {
+        "name": "StandardToken",
+        "address": "0x8C74e6cCd38c8B61B874B0514577206a0b8Dab98"
+      },
+      "0x296e803153658f6a064ddd0899c040aeb27d98db16c156530ae9eabf2f3e62a2": {
+        "name": "Survey",
+        "address": "0x92FD271DB21c6Fb633EC540E440fe3DcB3E60779"
+      }
+    }
+  },
+  "0x50ec16307ad2b2c0ac72e0ac8d2cf8c05c319626cc915766b7d4b3cc9f52ce8a": {
+    "contracts": {
+      "0x6574047832ac962183631429645c75b5d59dfc4eb7948ab233844000337bf492": {
+        "name": "Survey",
+        "address": "0x04D45b51fe4f00b4478F8b0719Fa779f14c8A194"
+      },
+      "0x53696c46286a8d5002996250765b0b12bdf4e3fcb0fe98bfc4648f2297118371": {
+        "name": "strings",
+        "address": "0x10Aa1c9C2ad79b240Dc612cd2c0c0f5513bAfF28"
+      },
+      "0x572c30425268893d9264f4f1c477dc8d06b9c6f7158477bc27d733a29141fbc8": {
+        "name": "SafeMath",
+        "address": "0xd8a512EBD6fd82f44dFFD968EEB0835265497d20"
+      },
+      "0x2606c76b2e18106a52e6aadd990e98cfd519332600f88ee45101918671e84bb9": {
+        "name": "BasicToken",
+        "address": "0x494748735312D87C54Ff36E9dc71f90fb800D7Df"
+      },
+      "0x916a589aeff74785b65b9748bcefc008f9c3a41a46b2b1b9dbc1651abe91003a": {
+        "name": "StandardToken",
+        "address": "0xe5731c3df7a510fba6c5b2766251ce631C6B1d78"
+      },
+      "0xaba1216e6214b329d3307e342575a010b11ab32db2fa19b581774c597c07401a": {
+        "name": "Survey",
+        "address": "0x8C74e6cCd38c8B61B874B0514577206a0b8Dab98"
+      },
+      "0x99749b5716d9bf14d15658859dbbb130f73b18613a084c496d16152c07e663f7": {
+        "name": "Survey",
+        "address": "0xAACD4A4624632CbA84adCEda845dE2c1c265f832"
+      },
+      "0x8c6e1cdd014f4491b52707b08936846d771882b5d91fff6b79a18f6eb989bc40": {
+        "name": "Survey",
+        "address": "0xfD31b5cE21e86b2B0275d87c1Bae5E43607Fc5Fe"
+      },
+      "0x2fe6967f23c77672d33be31eb8c664f2a5a3c39e867fcf36dee3f6f29fab688c": {
+        "name": "Survey",
+        "address": "0xB89D68FF60A00f867B797a9b337644E87a222bBA"
+      },
+      "0x522f931026c8ce031fbf48dd5ee1c0ee19de06503b251d06ba3da6e5d8fc58e2": {
+        "name": "Survey",
+        "address": "0x8B9AF00A6D29E7D687610E9dDB022c496DB551dE"
+      },
+      "0x67ea09324f3000a449e8bf9405537ba7fe1585bf7889bdc0440616a2d59cec7a": {
+        "name": "Survey",
+        "address": "0x1cc93CeDF04b000Ee36Ccd02E95f167C2f3afE0A"
+      },
+      "0xb5864002f77054256cec88e0b18795702a7f6249ab4dd445501a98ab20d30f11": {
+        "name": "Survey",
+        "address": "0x5Baf4D88bC454537C51CEC7568a1E23400483abc"
+      },
+      "0x296e803153658f6a064ddd0899c040aeb27d98db16c156530ae9eabf2f3e62a2": {
+        "name": "Survey",
+        "address": "0x321eF1b12d422F6526b9F4D0B11c27be53c80Ee8"
+      }
+    }
+  }
+}

@@ -2,8 +2,12 @@ body, .ant-menu {
   font-family: 'Ubuntu Mono', monospace !important;
   background-color: #191C21;
 }
-#app h1, #app h2, #app h3, #app h4, #app h5, #app h6 {
+#app h1, #app h2, #app h3, #app h4, #app h5, #app h6, #app p {
   color: white;
+  font-family: 'Ubuntu Mono', monospace !important;
+}
+#app input {
+  color: #191C21;
 }
 #app .ant-layout {
   padding: 0 15%;
@@ -27,7 +31,7 @@ body, .ant-menu {
 
 #app .ant-menu.ant-menu-dark .ant-menu-item-selected, .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
   background-color: transparent;
-  border-bottom: 6px solid #FF466A;
+  border-bottom: 6px solid #40a9ff;
 }
 #app .ant-menu-dark, .ant-menu-dark .ant-menu-sub {
   background: #191C21;
@@ -36,10 +40,62 @@ body, .ant-menu {
 #app .logo {
   width: 120px;
   float: left;
-  text-align: center;
+  text-align: left;
   color: white;
 }
 
 #app .ant-tabs-nav .ant-tabs-tab {
   height: 50px;
+}
+
+#app .identicon {
+  margin-right: 0;
+  right: 0;
+  padding-right: 0;
+  top: 10px;
+}
+
+#app .ant-steps-item-title {
+  color: white;
+  font-family: 'Ubuntu Mono', monospace !important;
+}
+
+#app .ant-steps-icon {
+  line-height: 2;
+  font-family: 'Ubuntu Mono', monospace !important;
+}
+
+#app .hidden {
+  display: none;
+}
+
+
+/* Helper classes */
+.text-center {
+  text-align: center;
+}
+
+.m-top-10 {
+  margin-top: 30px !important;
+}
+.m-top-20 {
+  margin-top: 30px !important
+}
+.m-top-30 {
+  margin-top: 30px !important;
+}
+.m-top-40 {
+  margin-top: 40px !important;
+}
+.m-bottom-10 {
+  margin-bottom: 10px !important;
+}
+.m-bottom-20 {
+  margin-bottom: 20px !important;
+}
+.m-bottom-30 {
+  margin-bottom: 30px !important;
+}
+.m-bottom-40 {
+  margin-bottom: 40px !important;
 }

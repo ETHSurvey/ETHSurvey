@@ -1,10 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Tabs, Layout, Menu } from 'antd';
+import { Layout, Menu } from 'antd';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-
-const Tab = Tabs.TabPane;
-const { Header, Content, Footer } = Layout;
 
 import EmbarkJS from 'Embark/EmbarkJS';
 import Blockchain from './components/blockchain';
@@ -12,9 +9,12 @@ import Storage from './components/storage';
 import CreateSurvey from './components/createSurvey';
 import ViewSurveys from './components/viewSurverys';
 import Home from './components/home';
+import Identicon from './components/identi';
 
 import './dapp.css';
 import 'antd/dist/antd.css';
+
+const { Header, Content } = Layout;
 
 class App extends React.Component {
 
@@ -22,24 +22,16 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      whisperEnabled: false,
+      loggedInAccount:  '0x000000000000000000000000',
       storageEnabled: false
     }
   }
 
   componentDidMount(){ 
     EmbarkJS.onReady(() => {
-      /*if (EmbarkJS.isNewWeb3()) {
-        EmbarkJS.Messages.Providers.whisper.getWhisperVersion((err, version) => { 
-          if(!err)
-              this.setState({whisperEnabled: true})
-            else
-              console.log(err);
-        });
-      }*/
-
       this.setState({
-        storageEnabled: true
+        storageEnabled: true,
+        loggedInAccount: web3.eth.defaultAccount
       });
     });
   }
@@ -55,7 +47,7 @@ class App extends React.Component {
     );
   }
 
-  render(){
+  render() {
     return (
       <Router>
         <Layout className="layout">
@@ -69,10 +61,11 @@ class App extends React.Component {
                 defaultSelectedKeys={['1']}
                 style={{ lineHeight: '64px' }}
               >
+                <Menu.Item key="6" disabled>{this.state.loggedInAccount.substring(0,4)}... <Identicon address={this.state.loggedInAccount} size={30}/></Menu.Item>
                 <Menu.Item key="5"><Link to="/storage">Storage</Link></Menu.Item>
                 <Menu.Item key="4"><Link to="/blockchain">Blockchain</Link></Menu.Item>
-                <Menu.Item key="3"><Link to="/view">Topics</Link></Menu.Item>
-                <Menu.Item key="2"><Link to="/create">About</Link></Menu.Item>
+                <Menu.Item key="3"><Link to="/view">View</Link></Menu.Item>
+                <Menu.Item key="2"><Link to="/create">Create</Link></Menu.Item>
                 <Menu.Item key="1"><Link to="/">Home</Link></Menu.Item>
               </Menu>
           </Header>
