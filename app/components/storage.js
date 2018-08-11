@@ -1,6 +1,7 @@
 import EmbarkJS from 'Embark/EmbarkJS';
 import React from 'react';
-import { Alert, Form, FormGroup, FormControl, HelpBlock, Button } from 'react-bootstrap';
+import { Form, FormGroup, FormControl, HelpBlock } from 'react-bootstrap';
+import { Alert, Button } from 'antd';
  
 class Storage extends React.Component {
 
@@ -102,12 +103,12 @@ class Storage extends React.Component {
             {
                 !this.props.enabled ?
                 <React.Fragment>
-                <Alert bsStyle="warning">The node you are using does not support IPFS. Please ensure <a href="https://github.com/ipfs/js-ipfs-api#cors" target="_blank">CORS</a> is setup for the IPFS node.</Alert>
+                <Alert type="warning">The node you are using does not support IPFS. Please ensure <a href="https://github.com/ipfs/js-ipfs-api#cors" target="_blank">CORS</a> is setup for the IPFS node.</Alert>
                 </React.Fragment> : ''
             }
             {
                 this.state.storageError !== '' ?
-                <Alert bsStyle="danger">{this.state.storageError}</Alert>
+                <Alert type="danger">{this.state.storageError}</Alert>
                 : ''
             }
             <h3>Save text to storage</h3>
@@ -117,7 +118,7 @@ class Storage extends React.Component {
                         type="text"
                         defaultValue={this.state.textToSave}
                         onChange={e => this.handleChange(e, 'textToSave')} />
-                    <Button bsStyle="primary" onClick={(e) => this.setText(e)}>Save Text</Button>
+                    <Button type="primary" onClick={(e) => this.setText(e)}>Save Text</Button>
                     <HelpBlock>generated Hash: <span className="textHash">{this.state.generatedHash}</span></HelpBlock>
                 </FormGroup>
             </Form> 
@@ -129,7 +130,7 @@ class Storage extends React.Component {
                         type="text"
                         value={this.state.loadText}
                         onChange={e => this.handleChange(e, 'loadText')} />
-                    <Button bsStyle="primary" onClick={(e) => this.loadHash(e)}>Load</Button>
+                    <Button type="primary" onClick={(e) => this.loadHash(e)}>Load</Button>
                     <HelpBlock>result: <span className="textHash">{this.state.storedText}</span></HelpBlock>
                 </FormGroup>
             </Form>
@@ -140,7 +141,7 @@ class Storage extends React.Component {
                     <FormControl
                         type="file"
                         onChange={(e) => this.handleFileUpload(e)} />
-                    <Button bsStyle="primary" onClick={(e) => this.uploadFile(e)}>Upload</Button>
+                    <Button type="primary" onClick={(e) => this.uploadFile(e)}>Upload</Button>
                     <HelpBlock>generated hash: <span className="fileHash">{this.state.fileHash}</span></HelpBlock>
                 </FormGroup>
             </Form>
@@ -152,7 +153,7 @@ class Storage extends React.Component {
                         type="text"
                         value={this.state.imageToDownload}
                         onChange={e => this.handleChange(e, 'imageToDownload')} />
-                    <Button bsStyle="primary" onClick={(e) => this.loadFile(e)}>Download</Button>
+                    <Button type="primary" onClick={(e) => this.loadFile(e)}>Download</Button>
                     <HelpBlock>file available at: <span><a href={this.state.url} target="_blank">{this.state.url}</a></span></HelpBlock>
                     <HelpBlock><img src={this.state.url} /></HelpBlock>
                 </FormGroup>
