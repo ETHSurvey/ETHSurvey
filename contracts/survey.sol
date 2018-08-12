@@ -8,7 +8,7 @@ contract Survey {
     struct response {
         address surveyee;
         uint submittedTime;
-        string hash;
+        bytes32 hash;
     }
 
     // ------- Struct for holding surveys ---
@@ -19,7 +19,7 @@ contract Survey {
         uint creationTime;
         uint expirationTime;
         string name;
-        string hash;
+        bytes32 hash;
         address tokenAddress;
         bool open;
 
@@ -28,9 +28,9 @@ contract Survey {
 
         // Responses Data
         mapping(address => bool) isSurveyee;
-        string[] responseHashes;
+        bytes32[] responseHashes;
         uint totalResponses;
-        mapping(string => response) Responses;
+        mapping(bytes32 => response) Responses;
     }
 
     mapping(bytes32 => survey) public Surveys;
@@ -73,7 +73,7 @@ contract Survey {
         s.creationTime = now;
         s.expirationTime = now + _expirationTimeDelta;
         s.name = _name;
-        s.hash = _hash;
+        s.hash = stringToBytes32(_hash);
         s.open = true;
         s.tokenAddress = _tokenAddress;
         Surveys[strToMappingIndex(_name)] = s;
@@ -96,11 +96,13 @@ contract Survey {
         // Check if the user had already submitted response
         require(!s.isSurveyee[msg.sender]);
 
+        bytes32 _responseHashBytes32 = stringToBytes32(_responseHash);
+
         // Add response to Survey
         response storage r;
         r.surveyee = msg.sender;
         r.submittedTime = now;
-        r.hash = _responseHash;
+        r.hash = _responseHashBytes32;
 
         // Transfer funds to the surveyee
         uint _value = s.amount / s.requiredResponses;
@@ -116,9 +118,9 @@ contract Survey {
 
         // Update survey data in the Surveys Map
         s.isSurveyee[msg.sender] = true;
-        s.responseHashes.push(_responseHash);
+        s.responseHashes.push(_responseHashBytes32);
         s.totalResponses += 1;
-        s.Responses[_responseHash] = r;
+        s.Responses[_responseHashBytes32] = r;
 
         s.remainingAmount -= _value;
 
@@ -128,25 +130,79 @@ contract Survey {
     }
 
     // ------- getter functions -----------
-    function surveyDetails(string _name) returns (uint, uint, address, address, string, uint, string, uint) {
-        return _surveyDetails(strToMappingIndex(_name));
+    function surveyInfo(string _name) returns (string, string) {
+        return _surveyInfo(strToMappingIndex(_name));
     }
 
-    function _surveyDetails(bytes32 index) returns (uint, uint, address, address, string, uint, string, uint) {
+    function _surveyInfo(bytes32 index) returns (string, string) {
         survey storage s = Surveys[index];
-        return (
-            s.amount,
-            s.requiredResponses,
-            s.tokenAddress,
-            s.surveyOwner,
-            s.name,
-            s.creationTime,
-            s.hash,
-            s.expirationTime
-        );
+        return (s.name, bytes32ToString(s.hash));
     }
+
+    function surveyResponses(string _name)
+    public
+    returns (bytes32[])
+    {
+        survey storage s = Surveys[strToMappingIndex(_name)];
+        return s.responseHashes;
+    }
+
+    // ------- helper functions -----------
 
     function strToMappingIndex(string memory str) returns (bytes32 result) {
         return keccak256(str);
+    }
+
+    function stringToBytes32(string memory source) returns (bytes32 result) {
+        bytes memory tempEmptyStringTest = bytes(source);
+        if (tempEmptyStringTest.length == 0) {
+            return 0x0;
+        }
+
+        assembly {
+            result := mload(add(source, 32))
+        }
+    }
+
+    function bytes32ToString(bytes32 x) constant returns (string) {
+        bytes memory bytesString = new bytes(32);
+        uint charCount = 0;
+
+        for (uint j = 0; j < 32; j++) {
+            byte char = byte(bytes32(uint(x) * 2 ** (8 * j)));
+            if (char != 0) {
+                bytesString[charCount] = char;
+                charCount++;
+            }
+        }
+
+        bytes memory bytesStringTrimmed = new bytes(charCount);
+        for (j = 0; j < charCount; j++) {
+            bytesStringTrimmed[j] = bytesString[j];
+        }
+
+        return string(bytesStringTrimmed);
+    }
+
+    function bytes32ArrayToString(bytes32[] data) returns (string) {
+        bytes memory bytesString = new bytes(data.length * 32);
+        uint urlLength;
+
+        for (uint i = 0; i < data.length; i++) {
+            for (uint j = 0; j < 32; j++) {
+                byte char = byte(bytes32(uint(data[i]) * 2 ** (8 * j)));
+                if (char != 0) {
+                    bytesString[urlLength] = char;
+                    urlLength += 1;
+                }
+            }
+        }
+
+        bytes memory bytesStringTrimmed = new bytes(urlLength);
+        for (i = 0; i < urlLength; i++) {
+            bytesStringTrimmed[i] = bytesString[i];
+        }
+
+        return string(bytesStringTrimmed);
     }
 }

@@ -27,7 +27,7 @@ class Blockchain extends React.Component {
 
     // If web3.js 1.0 is being used
     if (EmbarkJS.isNewWeb3()) {
-      Survey.methods.surveyDetails(this.state.valueSet).call().then(_value => console.log(_value));
+      Survey.methods.surveyInfo(this.state.valueSet).call().then(_value => console.log(_value));
     }
   }
 
