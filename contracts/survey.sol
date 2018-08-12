@@ -137,22 +137,25 @@ contract Survey {
         return (s.name, s.hash, s.totalResponses, s.responsesHash);
     }
 
-//    function getUserSurveys(address _surveyOwner)
-//    public
-//    returns (bytes32[], bytes32[])
-//    {
-//        uint surveysCount = survey_indices.length;
-//
-//         Name, Hash, Responses, Count
-//        bytes32[] memory names = new bytes32[](surveysCount.length);
-//        bytes32[] memory hashes = new bytes32[](surveysCount.length);
-//
-//        for (uint i = 0; i < surveysCount; i++) {
-//            survey storage s = Surveys[survey_indices[i]];
-//        }
-//
-//        return (names, hashes);
-//    }
+    function getUserSurveys(address _surveyOwner)
+    public
+    returns (bytes32[], uint[])
+    {
+        uint surveysCount = survey_indices.length;
+
+        // Name, Hash, Responses, Count
+        bytes32[] memory names = new bytes32[](surveysCount);
+        uint[] memory totalResponses = new uint[](surveysCount);
+
+        for (uint i = 0; i < surveysCount; i++) {
+            survey storage s = Surveys[survey_indices[i]];
+
+            names[i] = stringToBytes32(s.name);
+            totalResponses[i] = s.totalResponses;
+        }
+
+        return (names, totalResponses);
+    }
 
     // ------- helper functions -----------
 
