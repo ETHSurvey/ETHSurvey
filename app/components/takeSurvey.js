@@ -10,7 +10,7 @@ class TakeSurvey extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
-        name: 'ETH India',
+        name: 'Test6',
         forms: [{
           label: 'Name',
           description: '',
@@ -30,9 +30,8 @@ class TakeSurvey extends React.Component {
     }
 
     componentDidMount(){ 
-      const surveyName = 'Test5';
       EmbarkJS.onReady(() => {
-        Survey.methods.surveyInfo(surveyName).call().then((value) => {
+        Survey.methods.surveyInfo(this.state.name).call().then((value) => {
           this.loadHash(value[1], value[2]);
         });
       });
@@ -40,12 +39,15 @@ class TakeSurvey extends React.Component {
     }
 
     loadHash(hash, previousSubmissionHash){
+      console.log(hash)
+      console.log(previousSubmissionHash)
       EmbarkJS.Storage.get(hash)
         .then((content) => {
           const contentJson = JSON.parse(content);
           console.log(contentJson)
           this.setState({ forms: contentJson.forms });
-          EmbarkJS.Storage.get(previousSubmissionHash)
+          if (previousSubmissionHash.length > 1) {
+            EmbarkJS.Storage.get(previousSubmissionHash)
             .then((content) => {
               const contentJson = JSON.parse(content);
               console.log(contentJson)
@@ -56,6 +58,7 @@ class TakeSurvey extends React.Component {
                     console.log("Storage get Error => " + err.message);
                 }
             });
+          }
         })
         .catch((err) => {
             if(err){
@@ -82,6 +85,9 @@ class TakeSurvey extends React.Component {
         .then((hash) => {
           console.log(hash);
           let currentResponseHash = hash;
+          let prevSubmissios = this.state.prevResponses;
+          prevSubmissios.push(this.state.forms);
+          this.setState({ prevResponses: prevSubmissios });
           EmbarkJS.Storage.saveText(JSON.stringify(this.state.prevResponses))
           .then((value) => {
             console.log(hash);
