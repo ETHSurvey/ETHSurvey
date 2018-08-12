@@ -45,7 +45,7 @@ contract Survey {
         uint _amount,
         uint _requiredResponses,
         address _tokenAddress,
-        uint _expirationTimeDelta,
+        uint _expirationTime,
         string memory _hash
     ) payable public returns (bool) {
         require(_tokenAddress == 0x0 || msg.value == 0);
@@ -71,7 +71,7 @@ contract Survey {
         s.requiredResponses = _requiredResponses;
         s.surveyOwner = msg.sender;
         s.creationTime = now;
-        s.expirationTime = now + _expirationTimeDelta;
+        s.expirationTime = _expirationTime;
         s.name = _name;
         s.hash = stringToBytes32(_hash);
         s.open = true;
