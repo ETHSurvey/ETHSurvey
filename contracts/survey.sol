@@ -8,7 +8,7 @@ contract Survey {
     struct response {
         address surveyee;
         uint submittedTime;
-        bytes32 hash;
+        string hash;
     }
 
     // ------- Struct for holding surveys ---
@@ -19,7 +19,7 @@ contract Survey {
         uint creationTime;
         uint expirationTime;
         string name;
-        bytes32 hash;
+        string hash;
         address tokenAddress;
         bool open;
 
@@ -28,9 +28,9 @@ contract Survey {
 
         // Responses Data
         mapping(address => bool) isSurveyee;
-        bytes32[] responseHashes;
+        string responsesHash;
         uint totalResponses;
-        mapping(bytes32 => response) Responses;
+        mapping(string => response) Responses;
     }
 
     mapping(bytes32 => survey) public Surveys;
@@ -46,7 +46,7 @@ contract Survey {
         uint _requiredResponses,
         address _tokenAddress,
         uint _expirationTime,
-        string memory _hash
+        string _hash
     ) payable public returns (bool) {
         require(_tokenAddress == 0x0 || msg.value == 0);
 
@@ -73,7 +73,7 @@ contract Survey {
         s.creationTime = now;
         s.expirationTime = _expirationTime;
         s.name = _name;
-        s.hash = stringToBytes32(_hash);
+        s.hash = _hash;
         s.open = true;
         s.tokenAddress = _tokenAddress;
         Surveys[strToMappingIndex(_name)] = s;
@@ -84,7 +84,7 @@ contract Survey {
         return true;
     }
 
-    function submitSurveyResponse(string _name, string _responseHash) payable public returns (bool) {
+    function submitSurveyResponse(string _name, string _responseHash, string _responsesHash) payable public returns (bool) {
         survey storage s = Surveys[strToMappingIndex(_name)];
 
         // Check if surveyee is the survey owner
@@ -96,13 +96,11 @@ contract Survey {
         // Check if the user had already submitted response
         require(!s.isSurveyee[msg.sender]);
 
-        bytes32 _responseHashBytes32 = stringToBytes32(_responseHash);
-
         // Add response to Survey
         response storage r;
         r.surveyee = msg.sender;
         r.submittedTime = now;
-        r.hash = _responseHashBytes32;
+        r.hash = _responseHash;
 
         // Transfer funds to the surveyee
         uint _value = s.amount / s.requiredResponses;
@@ -118,9 +116,9 @@ contract Survey {
 
         // Update survey data in the Surveys Map
         s.isSurveyee[msg.sender] = true;
-        s.responseHashes.push(_responseHashBytes32);
+        s.responsesHash = _responsesHash;
         s.totalResponses += 1;
-        s.Responses[_responseHashBytes32] = r;
+        s.Responses[_responseHash] = r;
 
         s.remainingAmount -= _value;
 
@@ -130,22 +128,31 @@ contract Survey {
     }
 
     // ------- getter functions -----------
-    function surveyInfo(string _name) returns (string, string) {
+    function surveyInfo(string _name) returns (string, string, uint, string) {
         return _surveyInfo(strToMappingIndex(_name));
     }
 
-    function _surveyInfo(bytes32 index) returns (string, string) {
+    function _surveyInfo(bytes32 index) returns (string, string, uint, string) {
         survey storage s = Surveys[index];
-        return (s.name, bytes32ToString(s.hash));
+        return (s.name, s.hash, s.totalResponses, s.responsesHash);
     }
 
-    function surveyResponses(string _name)
-    public
-    returns (bytes32[])
-    {
-        survey storage s = Surveys[strToMappingIndex(_name)];
-        return s.responseHashes;
-    }
+//    function getUserSurveys(address _surveyOwner)
+//    public
+//    returns (bytes32[], bytes32[])
+//    {
+//        uint surveysCount = survey_indices.length;
+//
+//         Name, Hash, Responses, Count
+//        bytes32[] memory names = new bytes32[](surveysCount.length);
+//        bytes32[] memory hashes = new bytes32[](surveysCount.length);
+//
+//        for (uint i = 0; i < surveysCount; i++) {
+//            survey storage s = Surveys[survey_indices[i]];
+//        }
+//
+//        return (names, hashes);
+//    }
 
     // ------- helper functions -----------
 

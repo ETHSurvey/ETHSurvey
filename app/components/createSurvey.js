@@ -1,15 +1,12 @@
 import EmbarkJS from 'Embark/EmbarkJS';
 import Survey from 'Embark/contracts/Survey';
 import React from 'react';
-import moment from 'moment';
-import { Form, Input, InputNumber, Modal, DatePicker, Col, Row, Steps, Icon, Button, message } from 'antd';
+import { Form, Input, InputNumber, DatePicker, Col, Row, Steps, Icon, Button, message } from 'antd';
 
 import AddFormField from './addFormField';
 
-const FormItem = Form.Item;
 const Step = Steps.Step;
 const { TextArea } = Input;
-let uuid = {key: 0, type: '', label: ''};
 
 const formItemLayout = {
   labelCol: {
@@ -62,6 +59,7 @@ class CreateSurvey extends React.Component {
       console.log(this.state);
       EmbarkJS.Storage.saveText(JSON.stringify(this.state))
         .then((hash) => {
+          console.log(hash);
           Survey.methods.createSurvey(
             this.state.name,
             this.state.amount * 10**18,
@@ -71,7 +69,7 @@ class CreateSurvey extends React.Component {
             hash
           ).send({from: web3.eth.defaultAccount, value: this.state.amount * 10**18})
           .then((value) => {
-            console.log(value)
+            console.log(value);
             this.setState({ showResults: true });
             message.success('Transaction completed successfully!')
           });

@@ -27,7 +27,8 @@ class Blockchain extends React.Component {
 
     // If web3.js 1.0 is being used
     if (EmbarkJS.isNewWeb3()) {
-      Survey.methods.surveyInfo(this.state.valueSet).call().then(_value => console.log(_value));
+      Survey.methods.surveyInfo(this.state.valueSet).call()
+        .then((_value) => console.log(_value));
     }
   }
 
@@ -50,7 +51,7 @@ class Blockchain extends React.Component {
     e.preventDefault();
 
     console.log('submitResponse');
-    web3.eth.getBalance(Survey.address).then(_value => console.log(_value))
+    web3.eth.getBalance(Survey.address).then(_value => console.log(_value));
 
     if (EmbarkJS.isNewWeb3()) {
       Survey.methods.submitSurveyResponse(
