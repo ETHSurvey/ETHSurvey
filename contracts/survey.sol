@@ -5,7 +5,7 @@ pragma solidity ^0.4.23;
 contract Survey {
 
     // ------- Struct for holding surveyees ---
-    struct surveyee {
+    struct response {
         address surveyee;
         uint submittedTime;
         string hash;
@@ -14,7 +14,7 @@ contract Survey {
     // ------- Struct for holding surveys ---
     struct survey {
         uint amount;
-        uint numResponses;
+        uint requiredResponses;
         address surveyOwner;
         uint creationTime;
         uint expirationTime;
@@ -23,10 +23,14 @@ contract Survey {
         address tokenAddress;
         bool open;
 
-        // Surveyees Data
-        bytes32[] surveyees;
-        uint numSurveyees;
-        mapping(bytes32 => surveyee) surveyeeStructs;
+        // Keep track of the available funds
+        uint remainingAmount;
+
+        // Responses Data
+        mapping(address => bool) isSurveyee;
+        string[] responseHashes;
+        uint totalResponses;
+        mapping(string => response) Responses;
     }
 
     mapping(bytes32 => survey) public Surveys;
@@ -39,7 +43,7 @@ contract Survey {
     function createSurvey(
         string memory _name,
         uint _amount,
-        uint _numResponses,
+        uint _requiredResponses,
         address _tokenAddress,
         uint _expirationTimeDelta,
         string memory _hash
@@ -63,7 +67,8 @@ contract Survey {
         // create survey
         survey storage s;
         s.amount = _amount;
-        s.numResponses = _numResponses;
+        s.remainingAmount = _amount;
+        s.requiredResponses = _requiredResponses;
         s.surveyOwner = msg.sender;
         s.creationTime = now;
         s.expirationTime = now + _expirationTimeDelta;
@@ -79,15 +84,59 @@ contract Survey {
         return true;
     }
 
+    function submitSurveyResponse(string _name, string _responseHash) payable public returns (bool) {
+        survey storage s = Surveys[strToMappingIndex(_name)];
+
+        // Check if surveyee is the survey owner
+        require(s.surveyOwner != msg.sender);
+
+        // Check if there's funding available to transfer to the surveyee
+        require(s.amount != 0 && s.remainingAmount != 0);
+
+        // Check if the user had already submitted response
+        require(!s.isSurveyee[msg.sender]);
+
+        // Add response to Survey
+        response storage r;
+        r.surveyee = msg.sender;
+        r.submittedTime = now;
+        r.hash = _responseHash;
+
+        // Transfer funds to the surveyee
+        uint _value = s.amount / s.requiredResponses;
+
+        if (s.tokenAddress != 0x0) {
+            // ERC20
+            StandardToken token = StandardToken(s.tokenAddress);
+            require(token.transfer(msg.sender, _value));
+        } else {
+            // ETH
+            msg.sender.transfer(_value);
+        }
+
+        // Update survey data in the Surveys Map
+        s.isSurveyee[msg.sender] = true;
+        s.responseHashes.push(_responseHash);
+        s.totalResponses += 1;
+        s.Responses[_responseHash] = r;
+
+        s.remainingAmount -= _value;
+
+        Surveys[strToMappingIndex(_name)] = s;
+
+        return true;
+    }
+
     // ------- getter functions -----------
-    function surveyDetails(string _name) returns (uint, address, address, string, uint, string, uint) {
+    function surveyDetails(string _name) returns (uint, uint, address, address, string, uint, string, uint) {
         return _surveyDetails(strToMappingIndex(_name));
     }
 
-    function _surveyDetails(bytes32 index) returns (uint, address, address, string, uint, string, uint) {
+    function _surveyDetails(bytes32 index) returns (uint, uint, address, address, string, uint, string, uint) {
         survey storage s = Surveys[index];
         return (
             s.amount,
+            s.requiredResponses,
             s.tokenAddress,
             s.surveyOwner,
             s.name,

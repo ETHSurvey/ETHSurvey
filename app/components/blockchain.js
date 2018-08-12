@@ -23,37 +23,40 @@ class Blockchain extends React.Component {
     e.preventDefault();
 
     console.log(this.state.valueSet);
+    web3.eth.getBalance(Survey.address).then(_value => console.log(_value));
 
     // If web3.js 1.0 is being used
     if (EmbarkJS.isNewWeb3()) {
       Survey.methods.surveyDetails(this.state.valueSet).call().then(_value => console.log(_value));
-    } else {
-      Survey.surveyDetails(value);
     }
   }
 
-  getValue(e) {
+  createSurvey(e) {
     e.preventDefault();
 
     if (EmbarkJS.isNewWeb3()) {
       Survey.methods.createSurvey(
         'Survey 101',
-        10,
+        1 * 10**18,
         100,
         0x0,
         3600,
         ''
-      )
-        .send({from: web3.eth.defaultAccount, value: 10});
-    } else {
-      Survey.createSurvey(
+      ).send({from: web3.eth.defaultAccount, value: 1 * 10**18});
+    }
+  }
+
+  submitResponse(e) {
+    e.preventDefault();
+
+    console.log('submitResponse');
+    web3.eth.getBalance(Survey.address).then(_value => console.log(_value))
+
+    if (EmbarkJS.isNewWeb3()) {
+      Survey.methods.submitSurveyResponse(
         'Survey 101',
-        10,
-        100,
-        0x0,
-        3600,
-        ''
-      );
+        'NA'
+      ).send({from: web3.eth.defaultAccount});
     }
   }
 
@@ -81,7 +84,8 @@ class Blockchain extends React.Component {
         <Form inline>
           <FormGroup>
             <HelpBlock>current value is <span className="value">{this.state.valueGet}</span></HelpBlock>
-            <Button bsStyle="primary" onClick={(e) => this.getValue(e)}>Get Value</Button>
+            <Button bsStyle="primary" onClick={(e) => this.createSurvey(e)}>Create Survey</Button>
+            <Button bsStyle="primary" onClick={(e) => this.submitResponse(e)}>Submit Response</Button>
             <HelpBlock>Click the button to get the current value. The initial value is 100.</HelpBlock>
           </FormGroup>
         </Form>
