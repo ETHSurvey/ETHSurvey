@@ -1,5 +1,7 @@
-import EmbarkJS from 'Embark/EmbarkJS';
 import React from 'react';
+import { Icon } from 'antd';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import parallelo from '../images/parallello.svg';
 
 class CreateSurvey extends React.Component {
 
@@ -12,7 +14,16 @@ class CreateSurvey extends React.Component {
   
     render(){
       return (
-          <h3> Surveys, Decentralized & Incentivised! </h3>
+        <div className="home-container">
+          <div className="tagline">
+            <h1> Surveys, Decentralized & Incentivised! </h1>
+            <img src={parallelo} />
+          </div>
+          <div className="action-container">
+            <Link to="/create"><h3>BUIDL Survey <Icon type="right-circle-o" /></h3></Link>
+            <Link to="/view"><h3>View your Surveys <Icon type="right-circle-o" /></h3></Link>
+          </div>
+        </div>
       );
     }
   }

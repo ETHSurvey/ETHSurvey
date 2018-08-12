@@ -56,7 +56,7 @@ class AddFormField extends React.Component {
     render(){
       return (
         <div>
-          <Button type="dashed" onClick={this.showModal.bind(this)} style={{ width: '60%' }}>
+          <Button type="dashed" className="add-button m-top-40" onClick={this.showModal.bind(this)}>
             <Icon type="plus" /> Add Input field
           </Button>
           <Modal

@@ -1,5 +1,6 @@
 import EmbarkJS from 'Embark/EmbarkJS';
 import React from 'react';
+import moment from 'moment';
 import { Form, Input, InputNumber, Modal, DatePicker, Col, Row, Steps, Icon, Button, message } from 'antd';
 
 import AddFormField from './addFormField';
@@ -34,13 +35,14 @@ class CreateSurvey extends React.Component {
       super(props);
   
       this.state = {
+        name: '',
         current: 0,
         visible: false,
-        labels: [],
         forms: [],
-        expirationDate: '',
-        funding: '',
-        responsesLimit: 0
+        expirationTime: '',
+        amount: '',
+        numResponses: 0,
+        showResults: false
       }
     }
 
@@ -56,7 +58,10 @@ class CreateSurvey extends React.Component {
   
     handleSubmit(e) {
       e.preventDefault();
-      console.log('Received values of form: ', this.state);
+      console.log('Received values of form: ', this.state.forms.toString());
+      this.setState({ showResults: true });
+      this.saveJson();
+      message.success('Processing complete!')
     }
 
     setModalVisibility() {
@@ -69,33 +74,41 @@ class CreateSurvey extends React.Component {
     }
   
     handleModalSubmit(values) {
-      console.log(values)
       let updatedForms = this.state.forms;
       updatedForms.push(values);
       this.setState({
         forms: updatedForms
       })
-      console.log(this.state)
     }
 
     onFundingChange(value) {
-      console.log(value)
       this.setState({
-        funding: value
+        amount: value
       })
     }
 
     onDateSelect(date, dateString) {
-      console.log(date, dateString);
       this.setState({
-        expirationDate: dateString
+        expirationTime: date.unix()
       })
     }
 
     onResponseChange(value) {
       this.setState({
-        responsesLimit: value
+        numResponses: value
       })
+    }
+
+    saveJson() {
+      EmbarkJS.Storage.saveText(JSON.stringify(this.state))
+        .then((hash) => {
+          console.log(hash);
+        })
+        .catch((err) => {
+          if(err){
+            message.error('There was an error: ' + err.message);
+          }
+        });
     }
   
     render(){
@@ -104,85 +117,96 @@ class CreateSurvey extends React.Component {
       const { getFieldDecorator, getFieldValue } = this.props.form;
 
       const steps = [{
-        title: 'Build Form',
+        title: 'Buidl Form',
       }, {
-        title: 'Set Pricing & Expiration',
+        title: 'Set Expiration',
       }, {
-        title: 'Review',
+        title: 'Set Funding'
       }];
 
       return (
         <div>
-          <h1> Create a Survey </h1>
-          <Row type="flex">
-            <Col span={24}>
+          <h1 className="m-bottom-40"> Create a Survey </h1>
+          <Row type="flex" align="center">
+            <Col span={20}>
               <Steps current={current}>
                 {steps.map(item => <Step key={item.title} title={item.title} />)}
               </Steps>
-              <Form onSubmit={this.handleSubmit.bind(this)} className="m-top-40">
-                <div className={steps[current].title === 'Build Form' ? 'steps-content' : 'hidden'}>
-                  {this.state.forms.map((form, index) => {
-                    return(
-                      <div key={index}>
-                        <p>{form.label}</p>
-                        {form.description && (
-                          <p>{form.description}</p>
-                        )}
-                        {form.type === 'text' && (
-                          <Input name="label" type="text"/>
-                        )}
-                        {form.type === 'phoneNumber' && (
-                          <InputNumber min={1} max={10}/>
-                        )}
-                        {form.type === 'textarea' && (
-                          <TextArea rows={4} />
-                        )}
-                      </div>
-                    )
-                  })}
-                  <AddFormField
-                    submit={this.handleModalSubmit.bind(this)}
-                  />
+            </Col>
+            <Col span={16}>
+              {!this.state.showResults && (
+                <Form onSubmit={this.handleSubmit.bind(this)} className="m-top-40 form-container">
+                  <div className={steps[current].title === 'Buidl Form' ? 'steps-content' : 'hidden'}>
+                    <h3>Name of the Survey</h3>
+                    <Input name="name" type="text" onChange={e => this.setState({ name: e.target.value })} value={this.state.name}/>
+                    {this.state.forms.map((form, index) => {
+                      return(
+                        <div key={index} className="m-top-30">
+                          <h3 className="label">{form.label}</h3>
+                          {form.description && (
+                            <p className="description">{form.description}</p>
+                          )}
+                          {form.type === 'text' && (
+                            <Input name="label" type="text"/>
+                          )}
+                          {form.type === 'phoneNumber' && (
+                            <InputNumber min={1} max={10}/>
+                          )}
+                          {form.type === 'textarea' && (
+                            <TextArea rows={4} />
+                          )}
+                        </div>
+                      )
+                    })}
+                    <AddFormField
+                      submit={this.handleModalSubmit.bind(this)}
+                    />
+                  </div>
+                  <div className={steps[current].title === 'Set Expiration' ? 'steps-content text-center' : 'hidden'}>
+                    <h3>Select Expiration date</h3>
+                    <DatePicker onChange={this.onDateSelect.bind(this)} style={{width: '45%'}} className="m-top-30"/>
+                  </div>
+                  <div className={steps[current].title === 'Set Funding' ? 'steps-content text-center' : 'hidden'}>
+                    <h3>Set Funding Amount (in ETH)</h3>
+                    <InputNumber
+                      onChange={this.onFundingChange.bind(this)}
+                    />
+                    <h3 className="m-top-30">Set Responses limit</h3>
+                    <p style={{opacity: '0.3'}}>The funding would be split with limit</p>
+                    <InputNumber
+                      onChange={this.onResponseChange.bind(this)}
+                    />
+                  </div>
+                  <div className="steps-action m-top-40">
+                    {
+                      current > 0
+                      && (
+                      <Button size="large" className="step-action-buttons" ghost style={{ marginRight: 8, padding: '3' }} onClick={() => this.prev()}>
+                        Previous
+                      </Button>
+                      )
+                    }
+                    {
+                      current < steps.length - 1
+                      && <Button size="large" className="step-action-buttons" type="primary" onClick={() => this.next()}>Next</Button>
+                    }
+                    {
+                      current === steps.length - 1
+                      && <Button size="large" className="step-action-buttons" type="primary" htmlType="submit">Submit</Button>
+                    }
+                  </div>
+                </Form>
+              )}
+              {this.state.showResults && (
+                <div className="m-top-40">
+                  <Icon type="notification" className="congrats-icon"/>
+                  <h1>
+                    Congratulations! You've created a decentralized Survey.
+                  </h1>
+                  <p style={{ opacity: 0.5 }}>Here's the URL for your survey</p>
+                  <Input className="m-top-20" defaultValue={'http://localhost:8000/' + this.state.name.replace(/\s/g, "-").toLowerCase()} />
                 </div>
-                <div className={steps[current].title === 'Set Pricing & Expiration' ? 'steps-content' : 'hidden'}>
-                  <p>Select Expiration date</p>
-                  <DatePicker onChange={this.onDateSelect.bind(this)} />
-                  <p>Set Funding Amount</p>
-                  <InputNumber
-                    formatter={value => `${value}ETH`}
-                    parser={value => value.replace('ETH', '')}
-                    onChange={this.onFundingChange.bind(this)}
-                  />
-                  <p>Set Responses limit</p>
-                  <InputNumber
-                    onChange={this.onResponseChange.bind(this)}
-                  />
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                  >
-                    Submit
-                  </Button>
-                </div>
-                <div className="steps-action">
-                  {
-                    current < steps.length - 1
-                    && <Button type="primary" onClick={() => this.next()}>Next</Button>
-                  }
-                  {
-                    current === steps.length - 1
-                    && <Button type="primary" onClick={() => message.success('Processing complete!')}>Done</Button>
-                  }
-                  {
-                    current > 0
-                    && (
-                    <Button style={{ marginLeft: 8 }} onClick={() => this.prev()}>
-                      Previous
-                    </Button>
-                    )
-                  }
-                </div>
-              </Form>
+              )}
             </Col>
           </Row>
         </div>

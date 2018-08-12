@@ -1,26 +1,32 @@
 body, .ant-menu {
   font-family: 'Ubuntu Mono', monospace !important;
   background-color: #191C21;
+  height: -webkit-fill-available !important;
 }
 #app h1, #app h2, #app h3, #app h4, #app h5, #app h6, #app p {
   color: white;
   font-family: 'Ubuntu Mono', monospace !important;
 }
-#app input {
+#app input, #app .ant-input-number {
   color: #191C21;
+  height: 45px;
 }
 #app .ant-layout {
   padding: 0 15%;
   background-color: #191C21;
-  height: 100vh;
+  padding-bottom: 250px;
+  min-height: 100vh;
 }
 #app .container {
   font-family: 'Ubuntu Mono', monospace !important;
-  background-color: #191C21;
+  background: #202329;
+  padding: 50px 100px;
   color: white;
   margin-top: 80px;
 }
-
+#app .ant-input-number {
+  width: 45%;
+}
 #app .ant-layout-header {
   padding: 0;
 }
@@ -69,6 +75,72 @@ body, .ant-menu {
   display: none;
 }
 
+.form-container {
+  min-height: 300px;  
+}
+.steps-action {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+#app .ant-btn-lg {
+  padding: 4% 5% !important;
+  line-height: 0;
+  width: 20%;
+}
+#app .add-button {
+  width: 100%;
+  opacity: 0.3;
+  height: 80px;
+}
+.add-button:hover {
+  opacity: 0.5;
+}
+
+#app .description {
+  opacity: 0.6;
+}
+
+.tagline {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.tagline img {
+  margin-top: -60px;
+  margin-left: 110px;
+}
+.tagline h1 {
+  z-index: 20;
+}
+
+.home-container {
+  margin-top: 30%;
+}
+
+.action-container {
+  display: flex;
+  margin-top: 40px;
+}
+.action-container > a {
+  padding-right: 30px;
+}
+.action-container > a:hover {
+  opacity: 0.5;
+}
+
+.congrats-icon {
+  transform: scaleX(-1);
+  font-size: 22px;
+}
+
+.take-survey-submit {
+  text-align: center;
+  margin-top: 50px;
+}
 
 /* Helper classes */
 .text-center {

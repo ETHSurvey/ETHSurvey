@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import EmbarkJS from 'Embark/EmbarkJS';
 import Blockchain from './components/blockchain';
 import Storage from './components/storage';
+import TakeSurvey from './components/takeSurvey';
 import CreateSurvey from './components/createSurvey';
 import ViewSurveys from './components/viewSurverys';
 import Home from './components/home';
@@ -61,7 +62,8 @@ class App extends React.Component {
                 defaultSelectedKeys={['1']}
                 style={{ lineHeight: '64px' }}
               >
-                <Menu.Item key="6" disabled>{this.state.loggedInAccount.substring(0,4)}... <Identicon address={this.state.loggedInAccount} size={30}/></Menu.Item>
+                <Menu.Item key="7" disabled>{this.state.loggedInAccount.substring(0,4)}... <Identicon address={this.state.loggedInAccount} size={30}/></Menu.Item>
+                <Menu.Item key="6"><Link to="/takeSurvey">Take Survey</Link></Menu.Item>
                 <Menu.Item key="5"><Link to="/storage">Storage</Link></Menu.Item>
                 <Menu.Item key="4"><Link to="/blockchain">Blockchain</Link></Menu.Item>
                 <Menu.Item key="3"><Link to="/view">View</Link></Menu.Item>
@@ -75,6 +77,7 @@ class App extends React.Component {
             <Route path="/view" component={ViewSurveys} />
             <Route path="/blockchain" component={Blockchain} />
             <Route path="/storage" component={Storage} />
+            <Route path="/takeSurvey" component={TakeSurvey} />
           </Content>
         </Layout>
       </Router>
