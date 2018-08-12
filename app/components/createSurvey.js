@@ -1,4 +1,5 @@
 import EmbarkJS from 'Embark/EmbarkJS';
+import Survey from 'Embark/contracts/Survey';
 import React from 'react';
 import moment from 'moment';
 import { Form, Input, InputNumber, Modal, DatePicker, Col, Row, Steps, Icon, Button, message } from 'antd';
@@ -58,10 +59,28 @@ class CreateSurvey extends React.Component {
   
     handleSubmit(e) {
       e.preventDefault();
-      console.log('Received values of form: ', this.state.forms.toString());
-      this.setState({ showResults: true });
-      this.saveJson();
-      message.success('Processing complete!')
+      console.log(this.state);
+      EmbarkJS.Storage.saveText(JSON.stringify(this.state))
+        .then((hash) => {
+          Survey.methods.createSurvey(
+            this.state.name,
+            this.state.amount * 10**18,
+            this.state.numResponses,
+            0x0,
+            this.state.expirationTime,
+            hash
+          ).send({from: web3.eth.defaultAccount, value: this.state.amount * 10**18})
+          .then((value) => {
+            console.log(value)
+            this.setState({ showResults: true });
+            message.success('Transaction completed successfully!')
+          });
+        })
+        .catch((err) => {
+          if(err){
+            message.error('There was an error: ' + err.message);
+          }
+        });
     }
 
     setModalVisibility() {
@@ -97,18 +116,6 @@ class CreateSurvey extends React.Component {
       this.setState({
         numResponses: value
       })
-    }
-
-    saveJson() {
-      EmbarkJS.Storage.saveText(JSON.stringify(this.state))
-        .then((hash) => {
-          console.log(hash);
-        })
-        .catch((err) => {
-          if(err){
-            message.error('There was an error: ' + err.message);
-          }
-        });
     }
   
     render(){
