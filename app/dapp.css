@@ -46,8 +46,11 @@ body, .ant-menu {
 #app .logo {
   width: 120px;
   float: left;
+  font-size: 18px;
   text-align: left;
   color: white;
+  display: flex;
+  justify-content: space-around;
 }
 
 #app .ant-tabs-nav .ant-tabs-tab {

@@ -1,4 +1,5 @@
 import EmbarkJS from 'Embark/EmbarkJS';
+import Survey from 'Embark/contracts/Survey';
 import React from 'react';
 import { Form, Input, InputNumber, Modal, DatePicker, Col, Row, Steps, Icon, Button, message } from 'antd';
 
@@ -23,22 +24,38 @@ class TakeSurvey extends React.Component {
           label: 'Email',
           description: '',
           type: 'text',
-        }]
+        }],
+        prevResponses: []
       }
     }
 
     componentDidMount(){ 
+      const surveyName = 'Test5';
       EmbarkJS.onReady(() => {
-        this.loadHash('QmYNFHgyivYtiqwaNJx1Ha5iAMyABweLKmhYtCwe38367c')
+        Survey.methods.surveyInfo(surveyName).call().then((value) => {
+          this.loadHash(value[1], value[2]);
+        });
       });
+      // this.loadHash('QmPP8FtsZRQD1duZrbsRti6TUrqtRvPKTtXYzHjDQkudBY');
     }
 
-    loadHash(hash){
+    loadHash(hash, previousSubmissionHash){
       EmbarkJS.Storage.get(hash)
         .then((content) => {
           const contentJson = JSON.parse(content);
           console.log(contentJson)
           this.setState({ forms: contentJson.forms });
+          EmbarkJS.Storage.get(previousSubmissionHash)
+            .then((content) => {
+              const contentJson = JSON.parse(content);
+              console.log(contentJson)
+              this.setState({ prevResponses: contentJson.forms });
+            })
+            .catch((err) => {
+                if(err){
+                    console.log("Storage get Error => " + err.message);
+                }
+            });
         })
         .catch((err) => {
             if(err){
@@ -61,6 +78,32 @@ class TakeSurvey extends React.Component {
 
     onSubmitSurvey() {
       console.log(this.state)
+      EmbarkJS.Storage.saveText(JSON.stringify(this.state.forms))
+        .then((hash) => {
+          console.log(hash);
+          let currentResponseHash = hash;
+          EmbarkJS.Storage.saveText(JSON.stringify(this.state.prevResponses))
+          .then((value) => {
+            console.log(hash);
+            Survey.methods.submitSurveyResponse(
+              this.state.name,
+              currentResponseHash,
+              value
+            ).send({from: web3.eth.defaultAccount}).then((value) => {
+              console.log('done');
+            });
+          })
+          .catch((err) => {
+            if(err){
+              message.error('There was an error: ' + err.message);
+            }
+          });
+        })
+        .catch((err) => {
+          if(err){
+            message.error('There was an error: ' + err.message);
+          }
+        });
     }
   
     render(){

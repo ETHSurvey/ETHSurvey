@@ -11,6 +11,7 @@ import CreateSurvey from './components/createSurvey';
 import ViewSurveys from './components/viewSurverys';
 import Home from './components/home';
 import Identicon from './components/identi';
+import logo from './images/logo.svg';
 
 import './dapp.css';
 import 'antd/dist/antd.css';
@@ -24,11 +25,12 @@ class App extends React.Component {
 
     this.state = {
       loggedInAccount:  '0x000000000000000000000000',
-      storageEnabled: false
+      storageEnabled: false,
+      showNavbar: true,
     }
   }
 
-  componentDidMount(){ 
+  componentDidMount(){
     EmbarkJS.onReady(() => {
       this.setState({
         storageEnabled: true,
@@ -49,13 +51,22 @@ class App extends React.Component {
   }
 
   render() {
+    // if (window.location.pathname.includes('create') || 
+    //     window.location.pathname.includes('view') ||
+    //     window.location.pathname.includes('blockchain') ||
+    //     window.location.pathname.includes('storage')) {
+    //   this.setState({
+    //     showNavbar: true,
+    //   });
+    // }
     return (
       <Router>
         <Layout className="layout">
-          <Header>
-            <div className="logo">
-              Survey
-            </div>
+          {this.state.showNavbar && (
+            <Header>
+              <div className="logo">
+                <img src={logo} /> ETHSurvey
+              </div>
               <Menu
                 theme="dark"
                 mode="horizontal"
@@ -70,7 +81,8 @@ class App extends React.Component {
                 <Menu.Item key="2"><Link to="/create">Create</Link></Menu.Item>
                 <Menu.Item key="1"><Link to="/">Home</Link></Menu.Item>
               </Menu>
-          </Header>
+            </Header>
+          )}
           <Content className="container">
             <Route exact path="/" component={Home} />
             <Route path="/create" component={CreateSurvey} />

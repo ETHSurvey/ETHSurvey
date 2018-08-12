@@ -27,10 +27,10 @@ class ViewSurveys extends React.Component {
               <Card title="Survey 1" bordered={false} className="survery-card">32 Responses </Card>
             </Col>
             <Col span={8}>
-              <Card title="Survey 2" bordered={false} className="survery-card">32 Responses </Card>
+              <Card title="Survey 2" bordered={false} className="survery-card">11 Responses </Card>
             </Col>
             <Col span={8}>
-              <Card title="Survey 3" bordered={false} className="survery-card">32 Responses </Card>
+              <Card title="Survey 3" bordered={false} className="survery-card">122 Responses </Card>
             </Col>
           </Row>
         </div>
