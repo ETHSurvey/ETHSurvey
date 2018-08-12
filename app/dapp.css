@@ -76,7 +76,8 @@ body, .ant-menu {
 }
 
 .form-container {
-  min-height: 300px;  
+  min-height: 300px;
+  padding: 0 15% !important;
 }
 .steps-action {
   text-align: center;
@@ -86,9 +87,9 @@ body, .ant-menu {
   width: 100%;
 }
 #app .ant-btn-lg {
-  padding: 4% 5% !important;
   line-height: 0;
-  width: 20%;
+  width: 25%;
+  height: 50px;
 }
 #app .add-button {
   width: 100%;
@@ -140,6 +141,22 @@ body, .ant-menu {
 .take-survey-submit {
   text-align: center;
   margin-top: 50px;
+}
+#app .ant-card {
+  background: #2e313a;
+  color: #c7c7c7;
+}
+#app .ant-card-head-title {
+  color: white;
+}
+#app .ant-card-head {
+  border-bottom: 1px solid #000000;
+}
+.survery-card {
+  cursor: pointer;
+}
+.survery-card:hover {
+  opacity: 0.6;
 }
 
 /* Helper classes */

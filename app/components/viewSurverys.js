@@ -1,5 +1,6 @@
 import EmbarkJS from 'Embark/EmbarkJS';
 import React from 'react';
+import { Col, Row, Card } from 'antd';
 
 
 class ViewSurveys extends React.Component {
@@ -10,10 +11,29 @@ class ViewSurveys extends React.Component {
       this.state = {
       }
     }
+
+    componentDidMount(){ 
+      EmbarkJS.onReady(() => {
+        //Ready
+      });
+    }
   
     render(){
       return (
-          <h3> View Surveys </h3>
+        <div>
+          <Row gutter={16}>
+          <h1>Your Surveys</h1>
+            <Col span={8}>
+              <Card title="Survey 1" bordered={false} className="survery-card">32 Responses </Card>
+            </Col>
+            <Col span={8}>
+              <Card title="Survey 2" bordered={false} className="survery-card">32 Responses </Card>
+            </Col>
+            <Col span={8}>
+              <Card title="Survey 3" bordered={false} className="survery-card">32 Responses </Card>
+            </Col>
+          </Row>
+        </div>
       );
     }
   }

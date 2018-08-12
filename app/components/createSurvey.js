@@ -164,7 +164,7 @@ class CreateSurvey extends React.Component {
                   </div>
                   <div className={steps[current].title === 'Set Expiration' ? 'steps-content text-center' : 'hidden'}>
                     <h3>Select Expiration date</h3>
-                    <DatePicker onChange={this.onDateSelect.bind(this)} style={{width: '45%'}} className="m-top-30"/>
+                    <DatePicker onChange={this.onDateSelect.bind(this)} style={{width: '70%'}} className="m-top-30"/>
                   </div>
                   <div className={steps[current].title === 'Set Funding' ? 'steps-content text-center' : 'hidden'}>
                     <h3>Set Funding Amount (in ETH)</h3>
