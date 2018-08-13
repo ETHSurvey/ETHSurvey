@@ -143,15 +143,17 @@ contract Survey {
     {
         uint surveysCount = survey_indices.length;
 
-        // Name, Hash, Responses, Count
+        // Name, Responses Count
         bytes32[] memory names = new bytes32[](surveysCount);
         uint[] memory totalResponses = new uint[](surveysCount);
 
         for (uint i = 0; i < surveysCount; i++) {
             survey storage s = Surveys[survey_indices[i]];
 
-            names[i] = stringToBytes32(s.name);
-            totalResponses[i] = s.totalResponses;
+//            if (s.surveyOwner == _surveyOwner) {
+                names[i] = stringToBytes32(s.name);
+                totalResponses[i] = s.totalResponses;
+//            }
         }
 
         return (names, totalResponses);
@@ -172,6 +174,8 @@ contract Survey {
         assembly {
             result := mload(add(source, 32))
         }
+
+        return result;
     }
 
     function bytes32ToString(bytes32 x) constant returns (string) {

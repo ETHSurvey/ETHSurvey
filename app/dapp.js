@@ -45,20 +45,12 @@ class App extends React.Component {
     return (
       <div>
         {title} 
-        <span className={className}></span>
+        <span className={className} />
       </div>
     );
   }
 
   render() {
-    // if (window.location.pathname.includes('create') || 
-    //     window.location.pathname.includes('view') ||
-    //     window.location.pathname.includes('blockchain') ||
-    //     window.location.pathname.includes('storage')) {
-    //   this.setState({
-    //     showNavbar: true,
-    //   });
-    // }
     return (
       <Router>
         <Layout className="layout">
@@ -74,9 +66,9 @@ class App extends React.Component {
                 style={{ lineHeight: '64px' }}
               >
                 <Menu.Item key="7" disabled>{this.state.loggedInAccount.substring(0,4)}... <Identicon address={this.state.loggedInAccount} size={30}/></Menu.Item>
-                <Menu.Item key="6"><Link to="/takeSurvey">Take Survey</Link></Menu.Item>
-                <Menu.Item key="5"><Link to="/storage">Storage</Link></Menu.Item>
-                <Menu.Item key="4"><Link to="/blockchain">Blockchain</Link></Menu.Item>
+                <Menu.Item key="6"><Link to="/survey">Take Survey</Link></Menu.Item>
+                {/*<Menu.Item key="5"><Link to="/storage">Storage</Link></Menu.Item>*/}
+                {/*<Menu.Item key="4"><Link to="/blockchain">Blockchain</Link></Menu.Item>*/}
                 <Menu.Item key="3"><Link to="/view">View</Link></Menu.Item>
                 <Menu.Item key="2"><Link to="/create">Create</Link></Menu.Item>
                 <Menu.Item key="1"><Link to="/">Home</Link></Menu.Item>
@@ -89,7 +81,7 @@ class App extends React.Component {
             <Route path="/view" component={ViewSurveys} />
             <Route path="/blockchain" component={Blockchain} />
             <Route path="/storage" component={Storage} />
-            <Route path="/takeSurvey" component={TakeSurvey} />
+            <Route path="/survey" component={TakeSurvey} />
           </Content>
         </Layout>
       </Router>

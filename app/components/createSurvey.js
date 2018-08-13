@@ -209,7 +209,7 @@ class CreateSurvey extends React.Component {
                     Congratulations! You've created a decentralized Survey.
                   </h1>
                   <p style={{ opacity: 0.5 }}>Here's the URL for your survey</p>
-                  <Input className="m-top-20" defaultValue={'http://localhost:8000/' + this.state.name.replace(/\s/g, "-").toLowerCase()} />
+                  <Input className="m-top-20" defaultValue={'http://localhost:8000/survey?name=' + this.state.name.replace(/\s/g, "-")} />
                 </div>
               )}
             </Col>

@@ -1,7 +1,7 @@
 import EmbarkJS from 'Embark/EmbarkJS';
 import Survey from 'Embark/contracts/Survey';
 import React from 'react';
-import { Form, Input, InputNumber, Modal, DatePicker, Col, Row, Steps, Icon, Button, message } from 'antd';
+import { Form, Input, InputNumber, Button, message } from 'antd';
 
 const { TextArea } = Input;
 
@@ -9,8 +9,11 @@ class TakeSurvey extends React.Component {
 
     constructor(props) {
       super(props);
+
+      console.log(props);
+
       this.state = {
-        name: 'Test6',
+        name: 'ETH India',
         forms: [{
           label: 'Name',
           description: '',
@@ -31,6 +34,9 @@ class TakeSurvey extends React.Component {
 
     componentDidMount(){ 
       EmbarkJS.onReady(() => {
+        // const name = window.location.search.split('=')[1].replace('-', ' ');
+        // this.setState({ name });
+
         Survey.methods.surveyInfo(this.state.name).call().then((value) => {
           this.loadHash(value[1], value[2]);
         });
@@ -68,9 +74,6 @@ class TakeSurvey extends React.Component {
     }
 
     updateFormState(form, index, event) {
-      console.log(form);
-      console.log(index);
-      console.log(event.target.value);      
       let newForm = form;
       newForm['value'] = event.target.value;
       let forms = this.state.forms;
@@ -96,7 +99,7 @@ class TakeSurvey extends React.Component {
               currentResponseHash,
               value
             ).send({from: web3.eth.defaultAccount}).then((value) => {
-              console.log('done');
+              message.success('Response submitted successfully');
             });
           })
           .catch((err) => {
