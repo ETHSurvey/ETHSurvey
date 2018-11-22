@@ -7,42 +7,33 @@ import {
   Icon,
   Input,
   InputNumber,
+  message,
   Row,
   Steps
 } from 'antd';
 import moment from 'moment';
 
-// import SurveyArtifact from '@contracts/Survey.sol';
-
+// Components
 import AddFormField from './AddFormField';
-import { FormComponentProps } from 'antd/es/form';
+
+// Types
+import { RootState } from '@src/redux/state';
+import { WrappedFormUtils } from 'antd/es/form/Form';
+import { Survey } from '@src/types/Survey';
+import { FormField } from '@src/types';
 
 const Step = Steps.Step;
 const { TextArea } = Input;
 
-const formItemLayout = {
-  labelCol: {
-    sm: { span: 4 },
-    xs: { span: 24 }
-  },
-  wrapperCol: {
-    sm: { span: 20 },
-    xs: { span: 24 }
-  }
-};
-
-const formItemLayoutWithOutLabel = {
-  wrapperCol: {
-    sm: { span: 20, offset: 4 },
-    xs: { span: 24, offset: 0 }
-  }
-};
+interface CreateSurveyProps extends RootState {
+  form: WrappedFormUtils;
+}
 
 interface CreateSurveyState {
-  amount: string;
+  amount: number;
   current: number;
   expirationTime: string;
-  forms: Array<{}>;
+  forms: FormField[];
   name: string;
   numResponses: number;
   showResults: boolean;
@@ -50,14 +41,23 @@ interface CreateSurveyState {
 }
 
 class CreateSurvey extends React.Component<
-  FormComponentProps,
+  CreateSurveyProps,
   CreateSurveyState
 > {
-  constructor(props: FormComponentProps) {
+  constructor(props: CreateSurveyProps) {
     super(props);
 
+    this.next = this.next.bind(this);
+    this.prev = this.prev.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
+    this.handleModalSubmit = this.handleModalSubmit.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.onDateSelect = this.onDateSelect.bind(this);
+    this.onFundingChange = this.onFundingChange.bind(this);
+    this.onResponseChange = this.onResponseChange.bind(this);
+
     this.state = {
-      amount: '',
+      amount: 0,
       current: 0,
       expirationTime: '',
       forms: [],
@@ -81,6 +81,28 @@ class CreateSurvey extends React.Component<
   handleSubmit(e: React.FormEvent<{}>) {
     e.preventDefault();
     console.log(this.state);
+
+    const account = this.props.web3State.get('accounts').get(0);
+    const SurveyContract: Survey = this.props.web3State.get('survey');
+
+    SurveyContract.methods
+      .createSurvey(
+        this.state.name,
+        this.state.amount * 10 ** 18,
+        this.state.numResponses,
+        0x0,
+        this.state.expirationTime,
+        '0x0'
+      )
+      .send({
+        from: account,
+        value: this.state.amount * 10 ** 18
+      })
+      .then(value => {
+        console.log(value);
+        this.setState({ showResults: true });
+        message.success('Transaction completed successfully!');
+      });
 
     // EmbarkJS.Storage.saveText(JSON.stringify(this.state))
     //   .then(hash => {
@@ -115,14 +137,14 @@ class CreateSurvey extends React.Component<
     this.setState({ visible: false });
   }
 
-  handleModalSubmit(values: {}) {
-    const updatedForms = this.state.forms as Array<{}>;
+  handleModalSubmit(values: FormField) {
+    const updatedForms = this.state.forms as FormField[];
     updatedForms.push(values);
     this.setState({ forms: updatedForms });
   }
 
   onFundingChange(amount: string) {
-    this.setState({ amount });
+    this.setState({ amount: parseInt(amount, 10) });
   }
 
   onDateSelect(date: moment.Moment) {
@@ -153,7 +175,7 @@ class CreateSurvey extends React.Component<
     return (
       <div>
         <h1 className="m-bottom-40"> Create a Survey </h1>
-        <Row type="flex" align="center">
+        <Row type="flex" justify="center">
           <Col span={20}>
             <Steps current={current}>
               {steps.map(item => (
@@ -161,10 +183,11 @@ class CreateSurvey extends React.Component<
               ))}
             </Steps>
           </Col>
+
           <Col span={16}>
             {!this.state.showResults && (
               <Form
-                onSubmit={this.handleSubmit.bind(this)}
+                onSubmit={this.handleSubmit}
                 className="m-top-40 form-container"
               >
                 <div
@@ -181,6 +204,7 @@ class CreateSurvey extends React.Component<
                     onChange={e => this.setState({ name: e.target.value })}
                     value={this.state.name}
                   />
+
                   {this.state.forms.map((form, index) => {
                     return (
                       <div key={index} className="m-top-30">
@@ -189,17 +213,21 @@ class CreateSurvey extends React.Component<
                           <p className="description">{form.description}</p>
                         )}
                         {form.type === 'text' && (
-                          <Input name="label" type="text" />
+                          <Input name="label" type="text" disabled={true} />
                         )}
                         {form.type === 'phoneNumber' && (
-                          <InputNumber min={1} max={10} />
+                          <InputNumber min={1} max={10} disabled={true} />
                         )}
-                        {form.type === 'textarea' && <TextArea rows={4} />}
+                        {form.type === 'textarea' && (
+                          <TextArea rows={4} disabled={true} />
+                        )}
                       </div>
                     );
                   })}
-                  <AddFormField submit={this.handleModalSubmit.bind(this)} />
+
+                  <AddFormField submit={this.handleModalSubmit} />
                 </div>
+
                 <div
                   className={
                     steps[current].title === 'Set Expiration'
@@ -214,6 +242,7 @@ class CreateSurvey extends React.Component<
                     className="m-top-30"
                   />
                 </div>
+
                 <div
                   className={
                     steps[current].title === 'Set Funding'
@@ -222,13 +251,14 @@ class CreateSurvey extends React.Component<
                   }
                 >
                   <h3>Set Funding Amount (in ETH)</h3>
-                  <InputNumber onChange={this.onFundingChange.bind(this)} />
+                  <InputNumber onChange={this.onFundingChange} />
                   <h3 className="m-top-30">Set Responses limit</h3>
-                  <p style={{ opacity: '0.3' }}>
+                  <p style={{ opacity: 0.3 }}>
                     The funding would be split with limit
                   </p>
-                  <InputNumber onChange={this.onResponseChange.bind(this)} />
+                  <InputNumber onChange={this.onResponseChange} />
                 </div>
+
                 <div className="steps-action m-top-40">
                   {current > 0 && (
                     <Button
@@ -236,21 +266,23 @@ class CreateSurvey extends React.Component<
                       className="step-action-buttons"
                       ghost
                       style={{ marginRight: 8, padding: '3' }}
-                      onClick={() => this.prev()}
+                      onClick={this.prev}
                     >
                       Previous
                     </Button>
                   )}
+
                   {current < steps.length - 1 && (
                     <Button
                       size="large"
                       className="step-action-buttons"
                       type="primary"
-                      onClick={() => this.next()}
+                      onClick={this.next}
                     >
                       Next
                     </Button>
                   )}
+
                   {current === steps.length - 1 && (
                     <Button
                       size="large"
@@ -264,6 +296,7 @@ class CreateSurvey extends React.Component<
                 </div>
               </Form>
             )}
+
             {this.state.showResults && (
               <div className="m-top-40">
                 <Icon type="notification" className="congrats-icon" />

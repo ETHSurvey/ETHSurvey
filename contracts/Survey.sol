@@ -1,4 +1,4 @@
-import "openzeppelin-solidity/contracts/token/ERC20/StandardToken.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
 pragma solidity ^0.4.23;
 
@@ -53,7 +53,7 @@ contract Survey {
         // Transfer funds
         if (_tokenAddress != 0x0) {
             // ERC20 token
-            StandardToken token = StandardToken(_tokenAddress);
+            ERC20 token = ERC20(_tokenAddress);
             require(token.transferFrom(msg.sender, this, _amount));
         } else {
             // Ether
@@ -107,7 +107,7 @@ contract Survey {
 
         if (s.tokenAddress != 0x0) {
             // ERC20
-            StandardToken token = StandardToken(s.tokenAddress);
+            ERC20 token = ERC20(s.tokenAddress);
             require(token.transfer(msg.sender, _value));
         } else {
             // ETH

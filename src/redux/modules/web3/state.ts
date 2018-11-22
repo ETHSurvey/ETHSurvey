@@ -1,15 +1,25 @@
-import { Record } from 'immutable';
+import { List, Record } from 'immutable';
 import Web3 from 'web3';
 
+import { Survey } from '@src/types/Survey';
+
 export interface State {
+  accounts: List<string>;
   error: Error;
   loading: boolean;
+  network: string;
+  networkId: number;
+  survey: Survey;
   web3: Web3;
 }
 
 export const iWS: State = {
+  accounts: List([]),
   error: null,
   loading: false,
+  network: '',
+  networkId: 0,
+  survey: null,
   web3: null
 };
 

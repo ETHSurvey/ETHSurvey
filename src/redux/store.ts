@@ -33,7 +33,7 @@ if (process.env.NODE_ENV !== 'production') {
 export default function configureStore(initialState?: RootState) {
   const rootReducer = combineReducers({
     ...rootReducers,
-    router: routerReducer
+    routerState: routerReducer
   });
 
   const store = createStore(

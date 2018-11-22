@@ -28,8 +28,10 @@ module.exports = {
     historyApiFallback: true,
     host: '0.0.0.0',
     inline: true,
-    open: true,
     port: 3000,
+    stats: {
+      warnings: false
+    }
   },
 
   module: {
@@ -127,4 +129,8 @@ module.exports = {
       new tsConfigPathsPlugin()
     ],
   },
+
+  stats: {
+    warnings: false
+  }
 };

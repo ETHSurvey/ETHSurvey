@@ -68,14 +68,15 @@ typings/
 .embark
 
 # Build
-dist
 chains.json
 
 # testing
 /coverage
 
 # production
-/build
+build/
+ethsurvey.js
+ethsurvey.js.map
 
 # misc
 .DS_Store

@@ -1,23 +1,16 @@
 import React from 'react';
 import { Button, Icon, Input, Modal, Select } from 'antd';
 
+// Types
+import { FormField } from '@src/types';
+
 const Option = Select.Option;
 
 interface AddFormFieldProps {
-  submit: (form: AddFormFieldState) => {};
+  submit: (form: FormField) => void;
 }
 
-interface AddFormFieldState {
-  description: string;
-  label: string;
-  type: string;
-  visible: boolean;
-}
-
-class AddFormField extends React.Component<
-  AddFormFieldProps,
-  AddFormFieldState
-> {
+class AddFormField extends React.Component<AddFormFieldProps, FormField> {
   constructor(props: AddFormFieldProps) {
     super(props);
 

@@ -5,8 +5,6 @@ import { connect } from 'react-redux';
 
 import Header from '@src/views/components/Header';
 
-import SurveyArtifact from '@contracts/Survey.sol';
-
 import * as Web3Actions from '@src/redux/modules/web3/actions';
 import { RootState } from '@src/redux/state';
 
@@ -15,25 +13,34 @@ import '../less/app.less';
 
 // Routes
 import { routes } from '../routes';
+import { NULL_ADDRESS } from '@src/core/constants';
 
 const mapStateToProps = (state: RootState) => {
   return { ...state };
 };
 
-interface EthSurveyProps {
+interface EthSurveyProps extends RootState {
   initWeb3: () => {};
 }
 
 class EthSurvey extends React.Component<EthSurveyProps> {
-  componentWillMount() {
-    console.log(SurveyArtifact);
-    // this.props.initWeb3();
+  componentDidMount() {
+    this.props.initWeb3();
   }
 
   render() {
+    const { routerState, web3State } = this.props;
+
     return (
       <Layout style={{ minHeight: '100vh' }}>
-        <Header account={'0x00000000000000000000000000000000000'} />
+        <Header
+          account={
+            web3State.get('accounts').size > 0
+              ? web3State.get('accounts').get(0)
+              : NULL_ADDRESS
+          }
+          {...routerState}
+        />
         {routes.map(route => (
           <Route key={route.path} {...route} />
         ))}

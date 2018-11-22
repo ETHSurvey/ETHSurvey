@@ -1,2 +1,2 @@
-export * from './auth';
-export * from './domain';
+export * from './ipfs';
+export * from './web3';

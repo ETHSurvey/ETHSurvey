@@ -7,7 +7,15 @@ export const routes = [
     path: '/'
   },
   {
-    component: Containers.CreateContainer,
+    component: Containers.CreateSurveyContainer,
     path: '/create'
+  },
+  {
+    component: Containers.TakeSurveyContainer,
+    path: '/survey'
+  },
+  {
+    component: Containers.ViewSurveysContainer,
+    path: '/view'
   }
 ];

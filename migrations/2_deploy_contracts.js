@@ -1,5 +1,5 @@
-var Survey = artifacts.require('./Survey.sol')
+var Survey = artifacts.require("./Survey.sol");
 
-module.exports = function (deployer) {
-  deployer.deploy(Survey)
-}
+module.exports = function(deployer) {
+  deployer.deploy(Survey);
+};

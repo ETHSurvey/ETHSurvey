@@ -2,20 +2,25 @@ import * as React from 'react';
 import { Layout, Menu } from 'antd';
 import { Link } from 'react-router-dom';
 
+// Types
+import { RouterState } from 'react-router-redux';
+
+// Components
 import Identicon from '@src/views/components/Identicon';
 
 // Assets
 import logo from '@src/img/logo.svg';
 
 const AntDHeader = Layout.Header;
+const Item = Menu.Item;
 
-interface HeaderProps {
+interface HeaderProps extends RouterState {
   account: string;
 }
 
 class Header extends React.Component<HeaderProps, {}> {
   public render() {
-    const { account } = this.props;
+    const { account, location } = this.props;
 
     return (
       <AntDHeader>
@@ -26,25 +31,26 @@ class Header extends React.Component<HeaderProps, {}> {
         <Menu
           theme="dark"
           mode="horizontal"
-          defaultSelectedKeys={['1']}
+          defaultSelectedKeys={['/']}
+          selectedKeys={[location.pathname]}
           style={{ lineHeight: '64px' }}
         >
-          <Menu.Item key="7" disabled>
+          <Item key={'/account'} disabled>
             {account.substring(0, 4)}
             ... <Identicon address={account} size={30} />
-          </Menu.Item>
-          <Menu.Item key="4">
-            <Link to="/survey">Take Survey</Link>
-          </Menu.Item>
-          <Menu.Item key="3">
-            <Link to="/view">View</Link>
-          </Menu.Item>
-          <Menu.Item key="2">
-            <Link to="/create">Create</Link>
-          </Menu.Item>
-          <Menu.Item key="1">
-            <Link to="/">Home</Link>
-          </Menu.Item>
+          </Item>
+          <Item key={'/survey'}>
+            <Link to={'/survey'}>Take Survey</Link>
+          </Item>
+          <Item key={'/view'}>
+            <Link to={'/view'}>View</Link>
+          </Item>
+          <Item key={'/create'}>
+            <Link to={'/create'}>Create</Link>
+          </Item>
+          <Item key={'/'}>
+            <Link to={'/'}>Home</Link>
+          </Item>
         </Menu>
       </AntDHeader>
     );
