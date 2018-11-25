@@ -22,6 +22,8 @@ import { WrappedFormUtils } from 'antd/es/form/Form';
 import { Survey } from '@src/types/Survey';
 import { FormField } from '@src/types';
 
+import { NULL_ADDRESS } from '@src/core/constants';
+
 const Step = Steps.Step;
 const { TextArea } = Input;
 
@@ -30,7 +32,7 @@ interface CreateSurveyProps extends RootState {
 }
 
 interface CreateSurveyState {
-  amount: number;
+  amount: string;
   current: number;
   expirationTime: string;
   forms: FormField[];
@@ -57,7 +59,7 @@ class CreateSurvey extends React.Component<
     this.onResponseChange = this.onResponseChange.bind(this);
 
     this.state = {
-      amount: 0,
+      amount: '',
       current: 0,
       expirationTime: '',
       forms: [],
@@ -82,21 +84,24 @@ class CreateSurvey extends React.Component<
     e.preventDefault();
     console.log(this.state);
 
-    const account = this.props.web3State.get('accounts').get(0);
-    const SurveyContract: Survey = this.props.web3State.get('survey');
+    const { web3State } = this.props;
+    const web3 = web3State.get('web3');
+
+    const account = web3State.get('accounts').get(0);
+    const SurveyContract: Survey = web3State.get('survey');
 
     SurveyContract.methods
       .createSurvey(
         this.state.name,
-        this.state.amount * 10 ** 18,
+        web3.utils.toWei(this.state.amount, 'ether'),
         this.state.numResponses,
-        0x0,
+        NULL_ADDRESS,
         this.state.expirationTime,
         '0x0'
       )
       .send({
         from: account,
-        value: this.state.amount * 10 ** 18
+        value: web3.utils.toWei(this.state.amount, 'ether')
       })
       .then(value => {
         console.log(value);
@@ -143,8 +148,8 @@ class CreateSurvey extends React.Component<
     this.setState({ forms: updatedForms });
   }
 
-  onFundingChange(amount: string) {
-    this.setState({ amount: parseInt(amount, 10) });
+  onFundingChange(amount: number) {
+    this.setState({ amount: amount.toString(10) });
   }
 
   onDateSelect(date: moment.Moment) {
@@ -157,8 +162,6 @@ class CreateSurvey extends React.Component<
 
   render() {
     const { current } = this.state;
-
-    const { getFieldDecorator, getFieldValue } = this.props.form;
 
     const steps = [
       {
@@ -251,12 +254,23 @@ class CreateSurvey extends React.Component<
                   }
                 >
                   <h3>Set Funding Amount (in ETH)</h3>
-                  <InputNumber onChange={this.onFundingChange} />
+                  <InputNumber
+                    min={1}
+                    max={1000}
+                    step={1}
+                    onChange={this.onFundingChange}
+                  />
+
                   <h3 className="m-top-30">Set Responses limit</h3>
                   <p style={{ opacity: 0.3 }}>
                     The funding would be split with limit
                   </p>
-                  <InputNumber onChange={this.onResponseChange} />
+                  <InputNumber
+                    min={1}
+                    max={1000}
+                    step={1}
+                    onChange={this.onResponseChange}
+                  />
                 </div>
 
                 <div className="steps-action m-top-40">
@@ -305,7 +319,7 @@ class CreateSurvey extends React.Component<
                 <Input
                   className="m-top-20"
                   defaultValue={
-                    'http://localhost:8000/survey?name=' +
+                    'http://localhost:3000/survey?name=' +
                     this.state.name.replace(/\s/g, '-')
                   }
                 />

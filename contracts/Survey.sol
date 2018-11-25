@@ -4,33 +4,22 @@ pragma solidity ^0.4.23;
 
 contract Survey {
 
-    // ------- Struct for holding surveyees ---
-    struct response {
-        address surveyee;
-        uint submittedTime;
-        string hash;
-    }
-
     // ------- Struct for holding surveys ---
     struct survey {
         uint amount;
         uint requiredResponses;
-        address surveyOwner;
+        address admin;
         uint creationTime;
         uint expirationTime;
         string name;
-        string hash;
-        address tokenAddress;
-        bool open;
+        address tokenAddress; // ERC20 Token
 
         // Keep track of the available funds
         uint remainingAmount;
 
         // Responses Data
         mapping(address => bool) isSurveyee;
-        string responsesHash;
         uint totalResponses;
-        mapping(string => response) Responses;
     }
 
     mapping(bytes32 => survey) public Surveys;
@@ -45,13 +34,12 @@ contract Survey {
         uint _amount,
         uint _requiredResponses,
         address _tokenAddress,
-        uint _expirationTime,
-        string _hash
+        uint _expirationTime
     ) payable public returns (bool) {
-        require(_tokenAddress == 0x0 || msg.value == 0);
+        require(_tokenAddress == address(0) || msg.value == 0);
 
         // Transfer funds
-        if (_tokenAddress != 0x0) {
+        if (_tokenAddress != address(0)) {
             // ERC20 token
             ERC20 token = ERC20(_tokenAddress);
             require(token.transferFrom(msg.sender, this, _amount));
@@ -62,19 +50,17 @@ contract Survey {
         }
 
         // only one survey per name at a time
-        require(Surveys[strToMappingIndex(_name)].open == false);
+        require(Surveys[strToMappingIndex(_name)].admin == address(0));
 
         // create survey
         survey storage s;
         s.amount = _amount;
         s.remainingAmount = _amount;
         s.requiredResponses = _requiredResponses;
-        s.surveyOwner = msg.sender;
+        s.admin = msg.sender;
         s.creationTime = now;
         s.expirationTime = _expirationTime;
         s.name = _name;
-        s.hash = _hash;
-        s.open = true;
         s.tokenAddress = _tokenAddress;
         Surveys[strToMappingIndex(_name)] = s;
 
@@ -84,11 +70,11 @@ contract Survey {
         return true;
     }
 
-    function submitSurveyResponse(string _name, string _responseHash, string _responsesHash) payable public returns (bool) {
+    function submitSurveyResponse(string _name) payable public returns (bool) {
         survey storage s = Surveys[strToMappingIndex(_name)];
 
         // Check if surveyee is the survey owner
-        require(s.surveyOwner != msg.sender);
+        require(s.admin != msg.sender);
 
         // Check if there's funding available to transfer to the surveyee
         require(s.amount != 0 && s.remainingAmount != 0);
@@ -96,16 +82,10 @@ contract Survey {
         // Check if the user had already submitted response
         require(!s.isSurveyee[msg.sender]);
 
-        // Add response to Survey
-        response storage r;
-        r.surveyee = msg.sender;
-        r.submittedTime = now;
-        r.hash = _responseHash;
-
         // Transfer funds to the surveyee
         uint _value = s.amount / s.requiredResponses;
 
-        if (s.tokenAddress != 0x0) {
+        if (s.tokenAddress != address(0)) {
             // ERC20
             ERC20 token = ERC20(s.tokenAddress);
             require(token.transfer(msg.sender, _value));
@@ -116,9 +96,7 @@ contract Survey {
 
         // Update survey data in the Surveys Map
         s.isSurveyee[msg.sender] = true;
-        s.responsesHash = _responsesHash;
         s.totalResponses += 1;
-        s.Responses[_responseHash] = r;
 
         s.remainingAmount -= _value;
 
@@ -128,16 +106,16 @@ contract Survey {
     }
 
     // ------- getter functions -----------
-    function surveyInfo(string _name) returns (string, string, uint, string) {
+    function surveyInfo(string _name) returns (uint) {
         return _surveyInfo(strToMappingIndex(_name));
     }
 
-    function _surveyInfo(bytes32 index) returns (string, string, uint, string) {
+    function _surveyInfo(bytes32 index) returns (uint) {
         survey storage s = Surveys[index];
-        return (s.name, s.hash, s.totalResponses, s.responsesHash);
+        return (s.totalResponses);
     }
 
-    function getUserSurveys(address _surveyOwner)
+    function getUserSurveys(address _admin)
     public
     returns (bytes32[], uint[])
     {
@@ -150,10 +128,10 @@ contract Survey {
         for (uint i = 0; i < surveysCount; i++) {
             survey storage s = Surveys[survey_indices[i]];
 
-//            if (s.surveyOwner == _surveyOwner) {
+            if (s.admin == _admin) {
                 names[i] = stringToBytes32(s.name);
                 totalResponses[i] = s.totalResponses;
-//            }
+            }
         }
 
         return (names, totalResponses);
@@ -176,47 +154,5 @@ contract Survey {
         }
 
         return result;
-    }
-
-    function bytes32ToString(bytes32 x) constant returns (string) {
-        bytes memory bytesString = new bytes(32);
-        uint charCount = 0;
-
-        for (uint j = 0; j < 32; j++) {
-            byte char = byte(bytes32(uint(x) * 2 ** (8 * j)));
-            if (char != 0) {
-                bytesString[charCount] = char;
-                charCount++;
-            }
-        }
-
-        bytes memory bytesStringTrimmed = new bytes(charCount);
-        for (j = 0; j < charCount; j++) {
-            bytesStringTrimmed[j] = bytesString[j];
-        }
-
-        return string(bytesStringTrimmed);
-    }
-
-    function bytes32ArrayToString(bytes32[] data) returns (string) {
-        bytes memory bytesString = new bytes(data.length * 32);
-        uint urlLength;
-
-        for (uint i = 0; i < data.length; i++) {
-            for (uint j = 0; j < 32; j++) {
-                byte char = byte(bytes32(uint(data[i]) * 2 ** (8 * j)));
-                if (char != 0) {
-                    bytesString[urlLength] = char;
-                    urlLength += 1;
-                }
-            }
-        }
-
-        bytes memory bytesStringTrimmed = new bytes(urlLength);
-        for (i = 0; i < urlLength; i++) {
-            bytesStringTrimmed[i] = bytesString[i];
-        }
-
-        return string(bytesStringTrimmed);
     }
 }

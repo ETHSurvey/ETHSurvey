@@ -19,15 +19,12 @@ export class Survey {
     ): TransactionObject<{
       amount: string;
       requiredResponses: string;
-      surveyOwner: string;
+      admin: string;
       creationTime: string;
       expirationTime: string;
       name: string;
-      hash: string;
       tokenAddress: string;
-      open: boolean;
       remainingAmount: string;
-      responsesHash: string;
       totalResponses: string;
       0: string;
       1: string;
@@ -37,49 +34,25 @@ export class Survey {
       5: string;
       6: string;
       7: string;
-      8: boolean;
-      9: string;
-      10: string;
-      11: string;
+      8: string;
     }>;
-
-    bytes32ToString(x: string | number[]): TransactionObject<string>;
 
     createSurvey(
       _name: string,
       _amount: number | string,
       _requiredResponses: number | string,
       _tokenAddress: string,
-      _expirationTime: number | string,
-      _hash: string
+      _expirationTime: number | string
     ): TransactionObject<boolean>;
 
-    submitSurveyResponse(
-      _name: string,
-      _responseHash: string,
-      _responsesHash: string
-    ): TransactionObject<boolean>;
+    submitSurveyResponse(_name: string): TransactionObject<boolean>;
 
-    surveyInfo(
-      _name: string
-    ): TransactionObject<{
-      0: string;
-      1: string;
-      2: string;
-      3: string;
-    }>;
+    surveyInfo(_name: string): TransactionObject<string>;
 
-    _surveyInfo(
-      index: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-      2: string;
-      3: string;
-    }>;
+    _surveyInfo(index: string | number[]): TransactionObject<string>;
 
     getUserSurveys(
-      _surveyOwner: string
+      _admin: string
     ): TransactionObject<{
       0: (string)[];
       1: (string)[];
@@ -88,10 +61,6 @@ export class Survey {
     strToMappingIndex(str: string): TransactionObject<string>;
 
     stringToBytes32(source: string): TransactionObject<string>;
-
-    bytes32ArrayToString(
-      data: (string | number[])[]
-    ): TransactionObject<string>;
 
     numSurveys(): TransactionObject<string>;
   };

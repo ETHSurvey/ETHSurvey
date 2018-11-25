@@ -1,13 +1,21 @@
-/* tslint:disable */
 import React from 'react';
-import { Button, Form, Input, InputNumber, message } from 'antd';
+import { Button, Input, InputNumber } from 'antd';
 
-// import SurveyArtifact from '@contracts/Survey.sol';
+// Types
+import { RootState } from '@src/redux/state';
+import { FormField } from '@src/types';
+import { Survey } from '@src/types/Survey';
 
 const { TextArea } = Input;
 
-class TakeSurvey extends React.Component {
-  constructor(props: {}) {
+interface TakeSurveyState {
+  forms: FormField[];
+  name: string;
+  prevResponses: Array<{}>;
+}
+
+class TakeSurvey extends React.Component<RootState, TakeSurveyState> {
+  constructor(props: RootState) {
     super(props);
 
     this.onSubmitSurvey = this.onSubmitSurvey.bind(this);
@@ -17,17 +25,20 @@ class TakeSurvey extends React.Component {
         {
           description: '',
           label: 'Name',
-          type: 'text'
+          type: 'text',
+          visible: true
         },
         {
           description: '',
           label: 'Desc',
-          type: 'textarea'
+          type: 'textarea',
+          visible: true
         },
         {
           description: '',
           label: 'Email',
-          type: 'text'
+          type: 'text',
+          visible: true
         }
       ],
       name: 'ETH India',
@@ -35,53 +46,67 @@ class TakeSurvey extends React.Component {
     };
   }
 
-  // componentDidMount() {
-  // const name = window.location.search.split('=')[1].replace('-', ' ');
-  // this.setState({ name });
+  componentDidUpdate(prevProps: RootState) {
+    const SurveyContract: Survey = this.props.web3State.get('survey');
 
-  // Survey.methods.surveyInfo(this.state.name).call().then((value) => {
-  //   this.loadHash(value[ 1 ], value[ 2 ]);
-  // });
-  // this.loadHash('QmPP8FtsZRQD1duZrbsRti6TUrqtRvPKTtXYzHjDQkudBY');
-  // }
+    if (this.props !== prevProps && SurveyContract !== null) {
+      const name = window.location.search.split('=')[1].replace(/-/g, ' ');
+      this.setState({ name });
+      console.log(name);
 
-  // loadHash(hash, previousSubmissionHash) {
-  //   console.log(hash);
-  //   console.log(previousSubmissionHash);
-  //   EmbarkJS.Storage.get(hash)
-  //     .then((content) => {
-  //       const contentJson = JSON.parse(content);
-  //       console.log(contentJson);
-  //       this.setState({ forms: contentJson.forms });
-  //       if (previousSubmissionHash.length > 1) {
-  //         EmbarkJS.Storage.get(previousSubmissionHash)
-  //           .then((content) => {
-  //             const contentJson = JSON.parse(content);
-  //             console.log(contentJson);
-  //             this.setState({ prevResponses: contentJson.forms });
-  //           })
-  //           .catch((err) => {
-  //             if (err) {
-  //               console.log('Storage get Error => ' + err.message);
-  //             }
-  //           });
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       if (err) {
-  //         console.log('Storage get Error => ' + err.message);
-  //       }
-  //     });
-  // }
+      SurveyContract.methods
+        .getUserSurveys(this.props.web3State.get('accounts').get(0))
+        .call()
+        .then(value => {
+          console.log(value);
+        });
 
-  updateFormState(form, index, event) {
-    let newForm = form;
-    newForm['value'] = event.target.value;
-    let forms = this.state.forms;
-    forms[index] = newForm;
-    this.setState({ forms });
-    // console.log(this.state.forms);
+      SurveyContract.methods
+        .surveyInfo(name)
+        .call()
+        .then(value => {
+          console.log(value);
+          // this.loadHash(value[ 1 ], value[ 2 ]);
+        });
+    }
+
+    // loadHash(hash, previousSubmissionHash) {
+    //   console.log(hash);
+    //   console.log(previousSubmissionHash);
+    //   EmbarkJS.Storage.get(hash)
+    //     .then((content) => {
+    //       const contentJson = JSON.parse(content);
+    //       console.log(contentJson);
+    //       this.setState({ forms: contentJson.forms });
+    //       if (previousSubmissionHash.length > 1) {
+    //         EmbarkJS.Storage.get(previousSubmissionHash)
+    //           .then((content) => {
+    //             const contentJson = JSON.parse(content);
+    //             console.log(contentJson);
+    //             this.setState({ prevResponses: contentJson.forms });
+    //           })
+    //           .catch((err) => {
+    //             if (err) {
+    //               console.log('Storage get Error => ' + err.message);
+    //             }
+    //           });
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       if (err) {
+    //         console.log('Storage get Error => ' + err.message);
+    //       }
+    //     });
   }
+
+  // updateFormState(form, index, event) {
+  //   let newForm = form;
+  //   newForm['value'] = event.target.value;
+  //   let forms = this.state.forms;
+  //   forms[index] = newForm;
+  //   this.setState({ forms });
+  //   console.log(this.state.forms);
+  // }
 
   onSubmitSurvey() {
     console.log(this.state);
@@ -131,20 +156,20 @@ class TakeSurvey extends React.Component {
                 <Input
                   name="label"
                   type="text"
-                  onChange={this.updateFormState.bind(this, form, index)}
+                  // onChange={this.updateFormState.bind(this, form, index)}
                 />
               )}
               {form.type === 'phoneNumber' && (
                 <InputNumber
                   min={1}
                   max={10}
-                  onChange={this.updateFormState.bind(this, form, index)}
+                  // onChange={this.updateFormState.bind(this, form, index)}
                 />
               )}
               {form.type === 'textarea' && (
                 <TextArea
                   rows={4}
-                  onChange={this.updateFormState.bind(this, form, index)}
+                  // onChange={this.updateFormState.bind(this, form, index)}
                 />
               )}
             </div>
