@@ -23,6 +23,7 @@ import { Survey } from '@src/types/Survey';
 import { FormField } from '@src/types';
 
 import { NULL_ADDRESS } from '@src/core/constants';
+import { getShortId, ipfs } from '@src/core/services';
 
 const Step = Steps.Step;
 const { TextArea } = Input;
@@ -35,11 +36,10 @@ interface CreateSurveyState {
   amount: string;
   current: number;
   expirationTime: string;
-  forms: FormField[];
+  fields: FormField[];
   name: string;
   numResponses: number;
   showResults: boolean;
-  visible: boolean;
 }
 
 class CreateSurvey extends React.Component<
@@ -51,7 +51,6 @@ class CreateSurvey extends React.Component<
 
     this.next = this.next.bind(this);
     this.prev = this.prev.bind(this);
-    this.handleCancel = this.handleCancel.bind(this);
     this.handleModalSubmit = this.handleModalSubmit.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onDateSelect = this.onDateSelect.bind(this);
@@ -62,11 +61,10 @@ class CreateSurvey extends React.Component<
       amount: '',
       current: 0,
       expirationTime: '',
-      forms: [],
+      fields: [],
       name: '',
       numResponses: 0,
-      showResults: false,
-      visible: false
+      showResults: false
     };
   }
 
@@ -80,9 +78,9 @@ class CreateSurvey extends React.Component<
     this.setState({ current });
   }
 
-  handleSubmit(e: React.FormEvent<{}>) {
+  async handleSubmit(e: React.FormEvent<{}>) {
     e.preventDefault();
-    console.log(this.state);
+    // console.log(this.state);
 
     const { web3State } = this.props;
     const web3 = web3State.get('web3');
@@ -90,62 +88,49 @@ class CreateSurvey extends React.Component<
     const account = web3State.get('accounts').get(0);
     const SurveyContract: Survey = web3State.get('survey');
 
-    SurveyContract.methods
-      .createSurvey(
-        this.state.name,
-        web3.utils.toWei(this.state.amount, 'ether'),
-        this.state.numResponses,
-        NULL_ADDRESS,
-        this.state.expirationTime,
-        '0x0'
-      )
-      .send({
-        from: account,
-        value: web3.utils.toWei(this.state.amount, 'ether')
-      })
-      .then(value => {
-        console.log(value);
-        this.setState({ showResults: true });
-        message.success('Transaction completed successfully!');
-      });
+    const shortid = getShortId();
+    const ipfsPath = `/${shortid}/fields`;
 
-    // EmbarkJS.Storage.saveText(JSON.stringify(this.state))
-    //   .then(hash => {
-    //     console.log(hash);
-    //     Survey.methods
-    //       .createSurvey(
-    //         this.state.name,
-    //         this.state.amount * 10 ** 18,
-    //         this.state.numResponses,
-    //         0x0,
-    //         this.state.expirationTime,
-    //         hash
-    //       )
-    //       .send({
-    //         from: web3.eth.defaultAccount,
-    //         value: this.state.amount * 10 ** 18
-    //       })
-    //       .then(value => {
-    //         console.log(value);
-    //         this.setState({ showResults: true });
-    //         message.success('Transaction completed successfully!');
-    //       });
-    //   })
-    //   .catch(err => {
-    //     if (err) {
-    //       message.error('There was an error: ' + err.message);
-    //     }
-    //   });
-  }
+    // console.log(ipfsPath);
 
-  handleCancel() {
-    this.setState({ visible: false });
+    try {
+      // Create directory
+      await ipfs.createDirectory(`/${shortid}`);
+
+      // Save the form in IPFS
+      await ipfs.writeFileContent(ipfsPath, this.state.fields);
+
+      // Create the Survey on the Blockchain and transfer specified funds to contract
+      SurveyContract.methods
+        .createSurvey(
+          this.state.name,
+          shortid,
+          web3.utils.toWei(this.state.amount, 'ether'),
+          this.state.numResponses,
+          NULL_ADDRESS,
+          this.state.expirationTime
+        )
+        .send({
+          from: account,
+          value: web3.utils.toWei(this.state.amount, 'ether')
+        })
+        .then(value => {
+          console.log(value);
+          this.setState({ showResults: true });
+          message.success('Transaction completed successfully!');
+        });
+    } catch (err) {
+      console.error(err);
+      if (err) {
+        message.error('There was an error: ' + err.message);
+      }
+    }
   }
 
   handleModalSubmit(values: FormField) {
-    const updatedForms = this.state.forms as FormField[];
-    updatedForms.push(values);
-    this.setState({ forms: updatedForms });
+    const updatedFields = this.state.fields as FormField[];
+    updatedFields.push(values);
+    this.setState({ fields: updatedFields });
   }
 
   onFundingChange(amount: number) {
@@ -208,20 +193,20 @@ class CreateSurvey extends React.Component<
                     value={this.state.name}
                   />
 
-                  {this.state.forms.map((form, index) => {
+                  {this.state.fields.map((field, index) => {
                     return (
                       <div key={index} className="m-top-30">
-                        <h3 className="label">{form.label}</h3>
-                        {form.description && (
-                          <p className="description">{form.description}</p>
+                        <h3 className="label">{field.label}</h3>
+                        {field.description && (
+                          <p className="description">{field.description}</p>
                         )}
-                        {form.type === 'text' && (
+                        {field.type === 'text' && (
                           <Input name="label" type="text" disabled={true} />
                         )}
-                        {form.type === 'phoneNumber' && (
+                        {field.type === 'phoneNumber' && (
                           <InputNumber min={1} max={10} disabled={true} />
                         )}
-                        {form.type === 'textarea' && (
+                        {field.type === 'textarea' && (
                           <TextArea rows={4} disabled={true} />
                         )}
                       </div>

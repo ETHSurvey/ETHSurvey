@@ -23,6 +23,7 @@ export class Survey {
       creationTime: string;
       expirationTime: string;
       name: string;
+      shortid: string;
       tokenAddress: string;
       remainingAmount: string;
       totalResponses: string;
@@ -35,21 +36,33 @@ export class Survey {
       6: string;
       7: string;
       8: string;
+      9: string;
     }>;
 
     createSurvey(
       _name: string,
+      _shortid: string,
       _amount: number | string,
       _requiredResponses: number | string,
       _tokenAddress: string,
       _expirationTime: number | string
     ): TransactionObject<boolean>;
 
-    submitSurveyResponse(_name: string): TransactionObject<boolean>;
+    submitSurveyResponse(_shortid: string): TransactionObject<boolean>;
 
-    surveyInfo(_name: string): TransactionObject<string>;
+    surveyInfo(
+      _shortid: string
+    ): TransactionObject<{
+      0: string;
+      1: string;
+    }>;
 
-    _surveyInfo(index: string | number[]): TransactionObject<string>;
+    _surveyInfo(
+      index: string | number[]
+    ): TransactionObject<{
+      0: string;
+      1: string;
+    }>;
 
     getUserSurveys(
       _admin: string

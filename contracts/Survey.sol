@@ -12,6 +12,7 @@ contract Survey {
         uint creationTime;
         uint expirationTime;
         string name;
+        string shortid;
         address tokenAddress; // ERC20 Token
 
         // Keep track of the available funds
@@ -31,11 +32,16 @@ contract Survey {
 
     function createSurvey(
         string memory _name,
+        string memory _shortid,
         uint _amount,
         uint _requiredResponses,
         address _tokenAddress,
         uint _expirationTime
-    ) payable public returns (bool) {
+    )
+    payable
+    public
+    returns (bool)
+    {
         require(_tokenAddress == address(0) || msg.value == 0);
 
         // Transfer funds
@@ -49,29 +55,26 @@ contract Survey {
             require(msg.value > 0);
         }
 
-        // only one survey per name at a time
-        require(Surveys[strToMappingIndex(_name)].admin == address(0));
+        // shortid must be unique
+        require(Surveys[strToMappingIndex(_shortid)].admin == address(0));
 
         // create survey
-        survey storage s;
-        s.amount = _amount;
-        s.remainingAmount = _amount;
-        s.requiredResponses = _requiredResponses;
-        s.admin = msg.sender;
-        s.creationTime = now;
-        s.expirationTime = _expirationTime;
-        s.name = _name;
-        s.tokenAddress = _tokenAddress;
-        Surveys[strToMappingIndex(_name)] = s;
+        survey memory s = survey(_amount, _requiredResponses, msg.sender, now, _expirationTime, _name, _shortid, _tokenAddress, _amount, 0);
 
-        survey_indices.push(strToMappingIndex(_name));
+        Surveys[strToMappingIndex(_shortid)] = s;
+        survey_indices.push(strToMappingIndex(_shortid));
+
         numSurveys += 1;
 
         return true;
     }
 
-    function submitSurveyResponse(string _name) payable public returns (bool) {
-        survey storage s = Surveys[strToMappingIndex(_name)];
+    function submitSurveyResponse(string _shortid)
+    payable
+    public
+    returns (bool)
+    {
+        survey storage s = Surveys[strToMappingIndex(_shortid)];
 
         // Check if surveyee is the survey owner
         require(s.admin != msg.sender);
@@ -100,23 +103,32 @@ contract Survey {
 
         s.remainingAmount -= _value;
 
-        Surveys[strToMappingIndex(_name)] = s;
+        Surveys[strToMappingIndex(_shortid)] = s;
 
         return true;
     }
 
     // ------- getter functions -----------
-    function surveyInfo(string _name) returns (uint) {
-        return _surveyInfo(strToMappingIndex(_name));
+    function surveyInfo(string _shortid)
+    public
+    view
+    returns (string, uint)
+    {
+        return _surveyInfo(strToMappingIndex(_shortid));
     }
 
-    function _surveyInfo(bytes32 index) returns (uint) {
+    function _surveyInfo(bytes32 index)
+    internal
+    view
+    returns (string, uint)
+    {
         survey storage s = Surveys[index];
-        return (s.totalResponses);
+        return (s.name, s.totalResponses);
     }
 
     function getUserSurveys(address _admin)
     public
+    view
     returns (bytes32[], uint[])
     {
         uint surveysCount = survey_indices.length;
@@ -139,11 +151,19 @@ contract Survey {
 
     // ------- helper functions -----------
 
-    function strToMappingIndex(string memory str) returns (bytes32 result) {
-        return keccak256(str);
+    function strToMappingIndex(string memory str)
+    private
+    pure
+    returns (bytes32 result)
+    {
+        return keccak256(abi.encodePacked(str));
     }
 
-    function stringToBytes32(string memory source) returns (bytes32 result) {
+    function stringToBytes32(string memory source)
+    private
+    pure
+    returns (bytes32 result)
+    {
         bytes memory tempEmptyStringTest = bytes(source);
         if (tempEmptyStringTest.length == 0) {
             return 0x0;

@@ -25,7 +25,6 @@
   },
   "dependencies": {
     "antd": "^3.10.8",
-    "bs58": "^4.0.1",
     "history": "^4.7.2",
     "identicon.js": "^2.3.3",
     "immutable": "^4.0.0-rc.12",
@@ -40,6 +39,7 @@
     "redux-actions": "^2.6.4",
     "redux-observable": "^1.0.0",
     "rxjs": "^6.3.3",
+    "shortid": "^2.2.14",
     "underscore.string": "^3.3.5",
     "web3": "^1.0.0-beta.36"
   },
@@ -51,6 +51,7 @@
     "@types/react-router-redux": "^5.0.16",
     "@types/redux-actions": "^2.3.1",
     "@types/redux-logger": "^3.0.6",
+    "@types/shortid": "0.0.29",
     "@types/web3": "^1.0.12",
     "css-loader": "^1.0.1",
     "file-loader": "^2.0.0",
@@ -83,7 +84,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && npm run build"
+      "pre-commit": "lint-staged"
     }
   }
 }
