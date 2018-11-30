@@ -1,18 +1,26 @@
-import IpfsApi from 'ipfs-api';
+import IpfsHttpClient from 'ipfs-http-client';
 
-const ipfsApi = new IpfsApi('localhost', '5001', { protocol: 'http' });
+// Types
+import { IpfsFile } from '@src/types';
+
+const ipfsClient = new IpfsHttpClient('localhost', '5001', {
+  protocol: 'http'
+});
 
 export const ipfs = {
   createDirectory(path: string): Promise<void> {
-    return ipfsApi.files.mkdir(path);
+    return ipfsClient.files.mkdir(path);
+  },
+  getFileList(path?: string): Promise<IpfsFile[]> {
+    return ipfsClient.files.ls(path, { long: true });
   },
   readFileContent(path: string): Promise<string> {
-    return ipfsApi.files
+    return ipfsClient.files
       .read(path)
       .then((buffer: Buffer) => buffer.toString('UTF8'));
   },
   writeFileContent(path: string, data: {}): Promise<void> {
     const buffer = Buffer.from(JSON.stringify(data));
-    return ipfsApi.files.write(path, buffer, { create: true });
+    return ipfsClient.files.write(path, buffer, { create: true });
   }
 };

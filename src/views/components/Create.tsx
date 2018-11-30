@@ -39,6 +39,7 @@ interface CreateSurveyState {
   fields: FormField[];
   name: string;
   numResponses: number;
+  shortid: string;
   showResults: boolean;
 }
 
@@ -64,6 +65,7 @@ class CreateSurvey extends React.Component<
       fields: [],
       name: '',
       numResponses: 0,
+      shortid: '',
       showResults: false
     };
   }
@@ -91,7 +93,7 @@ class CreateSurvey extends React.Component<
     const shortid = getShortId();
     const ipfsPath = `/${shortid}/fields`;
 
-    // console.log(ipfsPath);
+    console.log(ipfsPath);
 
     try {
       // Create directory
@@ -115,15 +117,12 @@ class CreateSurvey extends React.Component<
           value: web3.utils.toWei(this.state.amount, 'ether')
         })
         .then(value => {
-          console.log(value);
-          this.setState({ showResults: true });
-          message.success('Transaction completed successfully!');
+          this.setState({ shortid, showResults: true });
+          message.success('Survey has been created successfully!');
         });
     } catch (err) {
       console.error(err);
-      if (err) {
-        message.error('There was an error: ' + err.message);
-      }
+      message.error('Error while fetching Survey: ' + err.message);
     }
   }
 
@@ -197,17 +196,21 @@ class CreateSurvey extends React.Component<
                     return (
                       <div key={index} className="m-top-30">
                         <h3 className="label">{field.label}</h3>
+
                         {field.description && (
                           <p className="description">{field.description}</p>
                         )}
+
                         {field.type === 'text' && (
                           <Input name="label" type="text" disabled={true} />
                         )}
-                        {field.type === 'phoneNumber' && (
-                          <InputNumber min={1} max={10} disabled={true} />
-                        )}
+
                         {field.type === 'textarea' && (
                           <TextArea rows={4} disabled={true} />
+                        )}
+
+                        {field.type === 'mobile' && (
+                          <InputNumber min={1} max={10} disabled={true} />
                         )}
                       </div>
                     );
@@ -303,10 +306,7 @@ class CreateSurvey extends React.Component<
                 <p style={{ opacity: 0.5 }}>Here's the URL for your survey</p>
                 <Input
                   className="m-top-20"
-                  defaultValue={
-                    'http://localhost:3000/survey?name=' +
-                    this.state.name.replace(/\s/g, '-')
-                  }
+                  defaultValue={`http://localhost:3000/s/${this.state.shortid}`}
                 />
               </div>
             )}

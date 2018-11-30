@@ -39,6 +39,22 @@ export class Survey {
       9: string;
     }>;
 
+    surveyInfo(
+      _shortid: string
+    ): TransactionObject<{
+      0: string;
+      1: string;
+      2: string;
+      3: string;
+    }>;
+
+    getUserSurveys(
+      _admin: string
+    ): TransactionObject<{
+      0: (string)[];
+      1: (string)[];
+    }>;
+
     createSurvey(
       _name: string,
       _shortid: string,
@@ -49,31 +65,6 @@ export class Survey {
     ): TransactionObject<boolean>;
 
     submitSurveyResponse(_shortid: string): TransactionObject<boolean>;
-
-    surveyInfo(
-      _shortid: string
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
-    _surveyInfo(
-      index: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: string;
-    }>;
-
-    getUserSurveys(
-      _admin: string
-    ): TransactionObject<{
-      0: (string)[];
-      1: (string)[];
-    }>;
-
-    strToMappingIndex(str: string): TransactionObject<string>;
-
-    stringToBytes32(source: string): TransactionObject<string>;
 
     numSurveys(): TransactionObject<string>;
   };

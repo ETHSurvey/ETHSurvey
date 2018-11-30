@@ -14,10 +14,15 @@ class AddFormField extends React.Component<AddFormFieldProps, FormField> {
   constructor(props: AddFormFieldProps) {
     super(props);
 
+    this.handleCancel = this.handleCancel.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleOk = this.handleOk.bind(this);
+    this.showModal = this.showModal.bind(this);
+
     this.state = {
       description: '',
       label: '',
-      type: '',
+      type: 'text',
       visible: false
     };
   }
@@ -36,7 +41,7 @@ class AddFormField extends React.Component<AddFormFieldProps, FormField> {
     this.setState({
       description: '',
       label: '',
-      type: ''
+      type: 'text'
     });
   }
 
@@ -57,15 +62,16 @@ class AddFormField extends React.Component<AddFormFieldProps, FormField> {
           htmlType={'button'}
           type="dashed"
           className="add-button m-top-40"
-          onClick={this.showModal.bind(this)}
+          onClick={this.showModal}
         >
           <Icon type="plus" /> Add Input field
         </Button>
+
         <Modal
           title="Buidl the field"
           visible={this.state.visible}
-          onOk={this.handleOk.bind(this)}
-          onCancel={this.handleCancel.bind(this)}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
         >
           <h4>Enter the title</h4>
           <Input
@@ -85,13 +91,13 @@ class AddFormField extends React.Component<AddFormFieldProps, FormField> {
 
           <h4 className="m-top-30">Enter the type of form field</h4>
           <Select
-            defaultValue={this.state.type}
             style={{ width: 120 }}
-            onChange={this.handleChange.bind(this)}
+            value={this.state.type}
+            onChange={this.handleChange}
           >
-            <Option value="text">Short Text</Option>
-            <Option value="phoneNumber">Phone Number</Option>
-            <Option value="textarea">Long Text</Option>
+            <Option value={'text'}>Short Text</Option>
+            <Option value={'textarea'}>Long Text</Option>
+            <Option value={'mobile'}>Phone Number</Option>
           </Select>
         </Modal>
       </div>

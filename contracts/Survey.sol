@@ -112,7 +112,7 @@ contract Survey {
     function surveyInfo(string _shortid)
     public
     view
-    returns (string, uint)
+    returns (string, uint, uint, uint)
     {
         return _surveyInfo(strToMappingIndex(_shortid));
     }
@@ -120,10 +120,10 @@ contract Survey {
     function _surveyInfo(bytes32 index)
     internal
     view
-    returns (string, uint)
+    returns (string, uint, uint, uint)
     {
-        survey storage s = Surveys[index];
-        return (s.name, s.totalResponses);
+        survey memory s = Surveys[index];
+        return (s.name, s.amount, s.requiredResponses, s.totalResponses);
     }
 
     function getUserSurveys(address _admin)
@@ -138,7 +138,7 @@ contract Survey {
         uint[] memory totalResponses = new uint[](surveysCount);
 
         for (uint i = 0; i < surveysCount; i++) {
-            survey storage s = Surveys[survey_indices[i]];
+            survey memory s = Surveys[survey_indices[i]];
 
             if (s.admin == _admin) {
                 names[i] = stringToBytes32(s.name);

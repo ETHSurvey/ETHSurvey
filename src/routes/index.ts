@@ -12,7 +12,7 @@ export const routes = [
   },
   {
     component: Containers.TakeSurveyContainer,
-    path: '/survey'
+    path: '/s/:id'
   },
   {
     component: Containers.ViewSurveysContainer,

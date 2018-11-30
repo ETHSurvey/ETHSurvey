@@ -39,9 +39,6 @@ class Header extends React.Component<HeaderProps, {}> {
             {account.substring(0, 4)}
             ... <Identicon address={account} size={30} />
           </Item>
-          <Item key={'/survey'}>
-            <Link to={'/survey'}>Take Survey</Link>
-          </Item>
           <Item key={'/view'}>
             <Link to={'/view'}>View</Link>
           </Item>
