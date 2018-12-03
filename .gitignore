@@ -75,8 +75,8 @@ chains.json
 
 # production
 build/
-ethsurvey.js
-ethsurvey.js.map
+public/ethsurvey.js
+public/ethsurvey.js.map
 
 # misc
 .DS_Store

@@ -4,7 +4,7 @@
   "homepage": ".",
   "scripts": {
     "start": "webpack-dev-server --mode=development",
-    "build": "rm -rf build/ && webpack --mode=production",
+    "build": "webpack --mode=production",
     "lint": "tslint --project './tsconfig.json'",
     "lint:fix": "tslint --project './tsconfig.json' --fix \"./src/**/*.{ts,tsx}\"",
     "prettier-ts": "prettier --single-quote --parser typescript --write \"./src/**/*.{ts,tsx}\"",

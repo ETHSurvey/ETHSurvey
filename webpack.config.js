@@ -1,11 +1,11 @@
 const path = require("path");
-const fs  = require("fs");
+const fs = require("fs");
 
 const lessToJs = require("less-vars-to-js");
 const themeVariables = lessToJs(fs.readFileSync(path.join(__dirname, "./src/less/theme.less"), "utf8"));
 
-const tsImportPluginFactory = require('ts-import-plugin');
-const tsConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const tsImportPluginFactory = require("ts-import-plugin");
+const tsConfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 
 // lessToJs does not support @icon-url: "some-string"
 // so we are manually adding it to the produced themeVariables js object here
@@ -14,44 +14,45 @@ themeVariables["@icon-url"] = "http://localhost:8082/fonts/iconfont";
 module.exports = (env, argv) => {
   return {
     context: path.join(__dirname, "src"),
-      entry: "./index.tsx",
+    entry: "./index.tsx",
     output: {
-    filename: "ethsurvey.js",
-      path: path.join(__dirname, "./"),
-      publicPath: '/'
-  },
+      filename: "ethsurvey.js",
+      path: path.join(__dirname, "public/"),
+      publicPath: "/"
+    },
 
     // Enable sourcemaps for debugging webpack"s output.
     devtool: "source-map",
 
-      devServer: {
-    disableHostCheck: true,
+    devServer: {
+      contentBase: "./public",
+      disableHostCheck: true,
       historyApiFallback: true,
-      host: '0.0.0.0',
+      host: "0.0.0.0",
       inline: true,
       port: 3000,
       stats: {
-      warnings: false
-    }
-  },
+        warnings: false
+      }
+    },
 
     module: {
       rules: [
         {
           test: /\.(jsx|tsx|js|ts)$/,
-          loader: 'ts-loader',
+          loader: "ts-loader",
           options: {
             transpileOnly: true,
             getCustomTransformers: () => ({
-              before: [ tsImportPluginFactory( {
-                  libraryName: 'antd',
-                  libraryDirectory: 'lib',
+              before: [tsImportPluginFactory({
+                  libraryName: "antd",
+                  libraryDirectory: "lib",
                   style: true
                 }
               )]
             }),
             compilerOptions: {
-              module: 'es2015'
+              module: "es2015"
             }
           },
           exclude: /node_modules/
@@ -65,13 +66,13 @@ module.exports = (env, argv) => {
         },
 
         {
-          enforce: 'pre',
+          enforce: "pre",
           test: /\.tsx?$/,
-          loader: 'tslint-loader',
+          loader: "tslint-loader",
           exclude: /node_modules/,
           options: {
             failOnHint: true,
-            configuration: require('./tslint.json')
+            configuration: require("./tslint.json")
           }
         },
 
@@ -95,14 +96,15 @@ module.exports = (env, argv) => {
           test: /\.sol/,
           use: [
             {
-              loader: 'json-loader'
+              loader: "json-loader"
             },
             {
-              loader: 'truffle-solidity-loader',
+              loader: "truffle-solidity-loader",
               options: {
-                migrations_directory: path.resolve(__dirname, './migrations'),
-                network: argv.mode === 'production' ? 'rinkeby' : 'development',
-                contracts_build_directory: path.resolve(__dirname, './build/contracts')
+                migrations_directory: path.resolve(__dirname, "./migrations"),
+                network: "development",
+                // network: argv.mode === "production" ? "rinkeby" : "development",
+                contracts_build_directory: path.resolve(__dirname, "./build/contracts")
               }
             }
           ]
@@ -112,10 +114,10 @@ module.exports = (env, argv) => {
           test: /\.(pdf|gif|ico|png|jp(e*)g|svg)$/,
           use: [
             {
-              loader: 'url-loader',
+              loader: "url-loader",
               options: {
                 limit: 8000, // Convert images < 8kb to base64 strings
-                name: 'images/[hash]-[name].[ext]'
+                name: "images/[hash]-[name].[ext]"
               }
             }
           ]
@@ -125,14 +127,14 @@ module.exports = (env, argv) => {
 
     resolve: {
       extensions: [".ts", ".tsx", ".js", ".json"],
-        modules: [path.resolve(__dirname, "src"), "node_modules"],
-        plugins: [
+      modules: [path.resolve(__dirname, "src"), "node_modules"],
+      plugins: [
         new tsConfigPathsPlugin()
-      ],
+      ]
     },
 
     stats: {
       warnings: false
     }
-  }
+  };
 };

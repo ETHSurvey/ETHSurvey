@@ -4,10 +4,10 @@ Decentralized Surveys Incentivized. Researchers/Companies get their product revi
 
 ## Getting Started
 
-Install [Embark framework](https://github.com/embark-framework/embark) in order to get started.
 
 ```
-$ npm -g install embark
+$ git clone https://github.com/eswarasai/ETHSurvey.git
+$ npm install
 
 # If you plan to use the simulator instead of a real ethereum node.
 $ npm -g install ganache-cli
@@ -16,7 +16,7 @@ $ npm -g install ganache-cli
 #### Start ETH Survey
 
 ```
-$ embark run
+$ npm run start
 ```
 
 ## Screenshots
