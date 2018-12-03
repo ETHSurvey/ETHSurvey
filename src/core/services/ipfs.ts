@@ -21,6 +21,6 @@ export const ipfs = {
   },
   writeFileContent(path: string, data: {}): Promise<void> {
     const buffer = Buffer.from(JSON.stringify(data));
-    return ipfsClient.files.write(path, buffer, { create: true });
+    return ipfsClient.files.write(path, buffer, { create: true, pin: true });
   }
 };

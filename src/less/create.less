@@ -1,0 +1,20 @@
+@import 'theme';
+
+#create {
+    .field-item {
+        position: relative;
+
+        .anticon-delete {
+            color: @error-color;
+            cursor: pointer;
+            display: none;
+            position: absolute;
+            top: 5px;
+            right: 0;
+        }
+
+        &:hover .anticon-delete {
+            display: block;
+        }
+    }
+}

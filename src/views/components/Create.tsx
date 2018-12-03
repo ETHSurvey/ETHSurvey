@@ -17,31 +17,19 @@ import moment from 'moment';
 import AddFormField from './AddFormField';
 
 // Types
-import { RootState } from '@src/redux/state';
-import { WrappedFormUtils } from 'antd/es/form/Form';
-import { Survey } from '@src/types/Survey';
 import { FormField } from '@src/types';
+import { CreateSurveyProps } from '@src/core/props';
+import { CreateSurveyState } from '@src/core/state';
 
 import { NULL_ADDRESS } from '@src/core/constants';
 import { getShortId, ipfs } from '@src/core/services';
 
+// Styles
+import '../../less/create.less';
+
+const FormItem = Form.Item;
 const Step = Steps.Step;
 const { TextArea } = Input;
-
-interface CreateSurveyProps extends RootState {
-  form: WrappedFormUtils;
-}
-
-interface CreateSurveyState {
-  amount: string;
-  current: number;
-  expirationTime: string;
-  fields: FormField[];
-  name: string;
-  numResponses: number;
-  shortid: string;
-  showResults: boolean;
-}
 
 class CreateSurvey extends React.Component<
   CreateSurveyProps,
@@ -54,25 +42,31 @@ class CreateSurvey extends React.Component<
     this.prev = this.prev.bind(this);
     this.handleModalSubmit = this.handleModalSubmit.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.onDateSelect = this.onDateSelect.bind(this);
-    this.onFundingChange = this.onFundingChange.bind(this);
-    this.onResponseChange = this.onResponseChange.bind(this);
 
     this.state = {
-      amount: '',
       current: 0,
-      expirationTime: '',
       fields: [],
-      name: '',
-      numResponses: 0,
       shortid: '',
       showResults: false
     };
   }
 
   next() {
-    const current = this.state.current + 1;
-    this.setState({ current });
+    const field = this.state.current === 0 ? 'name' : 'expirationTime';
+
+    this.props.form.validateFields([field], err => {
+      if (!err) {
+        if (this.state.fields.length === 0) {
+          message.error(
+            'Please add at-least one input field for the survey form!'
+          );
+          return;
+        }
+
+        const current = this.state.current + 1;
+        this.setState({ current });
+      }
+    });
   }
 
   prev() {
@@ -80,50 +74,57 @@ class CreateSurvey extends React.Component<
     this.setState({ current });
   }
 
-  async handleSubmit(e: React.FormEvent<{}>) {
+  handleSubmit(e: React.FormEvent<{}>) {
     e.preventDefault();
-    // console.log(this.state);
 
-    const { web3State } = this.props;
-    const web3 = web3State.get('web3');
+    this.props.form.validateFields(async (err, values) => {
+      if (err) {
+        return;
+      }
 
-    const account = web3State.get('accounts').get(0);
-    const SurveyContract: Survey = web3State.get('survey');
+      const { web3State } = this.props;
+      const web3 = web3State.get('web3');
 
-    const shortid = getShortId();
-    const ipfsPath = `/${shortid}/fields`;
+      const account = web3State.get('accounts').get(0);
+      const SurveyContract = web3State.get('survey');
 
-    console.log(ipfsPath);
+      const shortid = getShortId();
+      const ipfsPath = `/${shortid}/fields`;
 
-    try {
-      // Create directory
-      await ipfs.createDirectory(`/${shortid}`);
+      console.log(ipfsPath);
 
-      // Save the form in IPFS
-      await ipfs.writeFileContent(ipfsPath, this.state.fields);
+      try {
+        // Create directory
+        await ipfs.createDirectory(`/${shortid}`);
 
-      // Create the Survey on the Blockchain and transfer specified funds to contract
-      SurveyContract.methods
-        .createSurvey(
-          this.state.name,
-          shortid,
-          web3.utils.toWei(this.state.amount, 'ether'),
-          this.state.numResponses,
-          NULL_ADDRESS,
-          this.state.expirationTime
-        )
-        .send({
-          from: account,
-          value: web3.utils.toWei(this.state.amount, 'ether')
-        })
-        .then(value => {
-          this.setState({ shortid, showResults: true });
-          message.success('Survey has been created successfully!');
-        });
-    } catch (err) {
-      console.error(err);
-      message.error('Error while fetching Survey: ' + err.message);
-    }
+        // Save the form in IPFS
+        await ipfs.writeFileContent(ipfsPath, this.state.fields);
+
+        const amount = web3.utils.toWei(values.amount.toString(), 'ether');
+
+        // Create the Survey on the Blockchain and transfer specified funds to contract
+        SurveyContract.methods
+          .createSurvey(
+            values.name,
+            shortid,
+            amount,
+            values.numResponses,
+            NULL_ADDRESS,
+            values.expirationTime.unix().toString()
+          )
+          .send({
+            from: account,
+            value: amount
+          })
+          .then(value => {
+            this.setState({ shortid, showResults: true });
+            message.success('Survey has been created successfully!');
+          });
+      } catch (err) {
+        console.error(err);
+        message.error('Error while fetching Survey: ' + err.message);
+      }
+    });
   }
 
   handleModalSubmit(values: FormField) {
@@ -132,19 +133,8 @@ class CreateSurvey extends React.Component<
     this.setState({ fields: updatedFields });
   }
 
-  onFundingChange(amount: number) {
-    this.setState({ amount: amount.toString(10) });
-  }
-
-  onDateSelect(date: moment.Moment) {
-    this.setState({ expirationTime: date.unix().toString() });
-  }
-
-  onResponseChange(numResponses: number) {
-    this.setState({ numResponses });
-  }
-
   render() {
+    const { getFieldDecorator } = this.props.form;
     const { current } = this.state;
 
     const steps = [
@@ -160,8 +150,9 @@ class CreateSurvey extends React.Component<
     ];
 
     return (
-      <div>
+      <div id={'create'}>
         <h1 className="m-bottom-40"> Create a Survey </h1>
+
         <Row type="flex" justify="center">
           <Col span={20}>
             <Steps current={current}>
@@ -185,17 +176,24 @@ class CreateSurvey extends React.Component<
                   }
                 >
                   <h3>Name of the Survey</h3>
-                  <Input
-                    name="name"
-                    type="text"
-                    onChange={e => this.setState({ name: e.target.value })}
-                    value={this.state.name}
-                  />
+                  <FormItem>
+                    {getFieldDecorator('name', {
+                      rules: [
+                        {
+                          message: 'Please enter the name of the survey!',
+                          required: true,
+                          type: 'string'
+                        }
+                      ]
+                    })(<Input name="name" type="text" />)}
+                  </FormItem>
 
                   {this.state.fields.map((field, index) => {
                     return (
-                      <div key={index} className="m-top-30">
+                      <div key={index} className="field-item m-top-30">
                         <h3 className="label">{field.label}</h3>
+
+                        <Icon type="delete" theme="filled" />
 
                         {field.description && (
                           <p className="description">{field.description}</p>
@@ -227,11 +225,22 @@ class CreateSurvey extends React.Component<
                   }
                 >
                   <h3>Select Expiration date</h3>
-                  <DatePicker
-                    onChange={this.onDateSelect}
-                    style={{ width: '70%' }}
-                    className="m-top-30"
-                  />
+                  <FormItem>
+                    {getFieldDecorator('expirationTime', {
+                      rules: [
+                        {
+                          message: 'Please select an expiration date!',
+                          required: true,
+                          type: 'object'
+                        }
+                      ]
+                    })(
+                      <DatePicker
+                        style={{ width: '70%' }}
+                        className="m-top-30"
+                      />
+                    )}
+                  </FormItem>
                 </div>
 
                 <div
@@ -242,23 +251,34 @@ class CreateSurvey extends React.Component<
                   }
                 >
                   <h3>Set Funding Amount (in ETH)</h3>
-                  <InputNumber
-                    min={1}
-                    max={1000}
-                    step={1}
-                    onChange={this.onFundingChange}
-                  />
+                  <FormItem>
+                    {getFieldDecorator('amount', {
+                      rules: [
+                        {
+                          message: 'Please enter the amount to be funded!',
+                          required: true,
+                          type: 'number'
+                        }
+                      ]
+                    })(<InputNumber min={1} max={1000} step={1} />)}
+                  </FormItem>
 
                   <h3 className="m-top-30">Set Responses limit</h3>
                   <p style={{ opacity: 0.3 }}>
                     The funding would be split with limit
                   </p>
-                  <InputNumber
-                    min={1}
-                    max={1000}
-                    step={1}
-                    onChange={this.onResponseChange}
-                  />
+                  <FormItem>
+                    {getFieldDecorator('numResponses', {
+                      rules: [
+                        {
+                          message:
+                            'Please enter the number of responses required!',
+                          required: true,
+                          type: 'number'
+                        }
+                      ]
+                    })(<InputNumber min={1} max={1000} step={1} />)}
+                  </FormItem>
                 </div>
 
                 <div className="steps-action m-top-40">

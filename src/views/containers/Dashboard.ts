@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 
 import { RootState } from '@src/redux/state';
 
-import ViewSurveys from '@src/views/components/View';
+import Dashboard from '@src/views/components/Dashboard';
 
 const mapStateToProps = (state: RootState, ownProps: {}) => {
   return { ...state };
@@ -11,4 +11,4 @@ const mapStateToProps = (state: RootState, ownProps: {}) => {
 export default connect<{}>(
   mapStateToProps,
   {}
-)(ViewSurveys);
+)(Dashboard);

@@ -3,12 +3,9 @@ import { Button, Icon, Input, Modal, Select } from 'antd';
 
 // Types
 import { FormField } from '@src/types';
+import { AddFormFieldProps } from '@src/core/props';
 
 const Option = Select.Option;
-
-interface AddFormFieldProps {
-  submit: (form: FormField) => void;
-}
 
 class AddFormField extends React.Component<AddFormFieldProps, FormField> {
   constructor(props: AddFormFieldProps) {

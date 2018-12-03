@@ -1,31 +1,18 @@
 import React from 'react';
-import { RouteComponentProps } from 'react-router';
 import { Button, Input, InputNumber, message } from 'antd';
 
 // Types
 import { FormField } from '@src/types';
-import { Survey } from '@src/types/Survey';
-import { Web3State } from '@src/redux/modules/web3';
+import { DefaultProps } from '@src/core/props';
+import { TakeSurveyState } from '@src/core/state';
 
 // Services
 import { ipfs } from '@src/core/services';
 
 const { TextArea } = Input;
 
-interface TakeSurveyProps extends RouteComponentProps<{ id: string }> {
-  web3State: Web3State;
-}
-
-interface TakeSurveyState {
-  amount: string;
-  fields: FormField[];
-  name: string;
-  requiredResponses: string;
-  totalResponses: string;
-}
-
-class TakeSurvey extends React.Component<TakeSurveyProps, TakeSurveyState> {
-  constructor(props: TakeSurveyProps) {
+class TakeSurvey extends React.Component<DefaultProps, TakeSurveyState> {
+  constructor(props: DefaultProps) {
     super(props);
 
     this.onSubmitSurvey = this.onSubmitSurvey.bind(this);
@@ -40,10 +27,10 @@ class TakeSurvey extends React.Component<TakeSurveyProps, TakeSurveyState> {
     };
   }
 
-  async componentDidUpdate(prevProps: TakeSurveyProps) {
+  async componentDidUpdate(prevProps: DefaultProps) {
     const { match, web3State } = this.props;
 
-    const SurveyContract: Survey = web3State.get('survey');
+    const SurveyContract = web3State.get('survey');
 
     const shortid = match.params.id;
 
@@ -83,12 +70,8 @@ class TakeSurvey extends React.Component<TakeSurveyProps, TakeSurveyState> {
     }
   }
 
-  updateFieldValue(
-    field: FormField,
-    index: number,
-    event: React.FormEvent<HTMLInputElement>
-  ) {
-    field.value = event.currentTarget.value;
+  updateFieldValue(field: FormField, index: number, value: string) {
+    field.value = value;
 
     const fields = this.state.fields;
     fields[index] = field;
@@ -103,7 +86,7 @@ class TakeSurvey extends React.Component<TakeSurveyProps, TakeSurveyState> {
 
     const account = web3State.get('accounts').get(0);
     const shortid = match.params.id;
-    const SurveyContract: Survey = web3State.get('survey');
+    const SurveyContract = web3State.get('survey');
 
     SurveyContract.methods
       .submitSurveyResponse(shortid)
@@ -148,22 +131,27 @@ class TakeSurvey extends React.Component<TakeSurveyProps, TakeSurveyState> {
                 <Input
                   name="label"
                   type="text"
-                  onChange={e => this.updateFieldValue(field, index, e)}
+                  onChange={e =>
+                    this.updateFieldValue(field, index, e.currentTarget.value)
+                  }
                 />
               )}
 
               {field.type === 'textarea' && (
                 <TextArea
                   rows={4}
-                  onChange={e => this.updateFieldValue(field, index, e)}
+                  onChange={e =>
+                    this.updateFieldValue(field, index, e.currentTarget.value)
+                  }
                 />
               )}
 
               {field.type === 'mobile' && (
                 <InputNumber
                   min={1}
-                  max={10}
-                  onChange={e => this.updateFieldValue(field, index, e)}
+                  onChange={e =>
+                    this.updateFieldValue(field, index, e.toString())
+                  }
                 />
               )}
             </div>

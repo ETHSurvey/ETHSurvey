@@ -24,9 +24,11 @@ class Header extends React.Component<HeaderProps, {}> {
 
     return (
       <AntDHeader>
-        <div className="logo">
-          <img src={logo} /> ETHSurvey
-        </div>
+        <Link to={'/'}>
+          <div className="logo">
+            <img alt={'ETHSurvey Logo'} src={logo} /> ETHSurvey
+          </div>
+        </Link>
 
         <Menu
           theme="dark"
@@ -39,14 +41,11 @@ class Header extends React.Component<HeaderProps, {}> {
             {account.substring(0, 4)}
             ... <Identicon address={account} size={30} />
           </Item>
-          <Item key={'/view'}>
-            <Link to={'/view'}>View</Link>
-          </Item>
           <Item key={'/create'}>
             <Link to={'/create'}>Create</Link>
           </Item>
-          <Item key={'/'}>
-            <Link to={'/'}>Home</Link>
+          <Item key={'/dashboard'}>
+            <Link to={'/dashboard'}>Dashboard</Link>
           </Item>
         </Menu>
       </AntDHeader>

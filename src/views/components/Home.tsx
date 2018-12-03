@@ -23,7 +23,7 @@ class Home extends React.Component<{}, {}> {
                   BUIDL Survey <Icon type="right-circle-o" />
                 </h3>
               </Link>
-              <Link to="/view">
+              <Link to="/dashboard">
                 <h3>
                   View your Surveys <Icon type="right-circle-o" />
                 </h3>

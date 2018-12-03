@@ -11,11 +11,11 @@ export const routes = [
     path: '/create'
   },
   {
-    component: Containers.TakeSurveyContainer,
-    path: '/s/:id'
+    component: Containers.DashboardContainer,
+    path: '/dashboard'
   },
   {
-    component: Containers.ViewSurveysContainer,
-    path: '/view'
+    component: Containers.TakeSurveyContainer,
+    path: '/s/:id'
   }
 ];
