@@ -1,5 +1,5 @@
 {
-  "name": "ETHSurvey",
+  "name": "ethsurvey",
   "version": "0.0.1",
   "homepage": ".",
   "scripts": {
@@ -45,7 +45,7 @@
     "web3": "^1.0.0-beta.36"
   },
   "devDependencies": {
-    "@types/react": "^16.7.11",
+    "@types/react": "^16.7.13",
     "@types/react-dom": "^16.0.11",
     "@types/react-redux": "^6.0.10",
     "@types/react-router-dom": "^4.3.1",
@@ -53,7 +53,7 @@
     "@types/redux-actions": "^2.3.1",
     "@types/redux-logger": "^3.0.6",
     "@types/shortid": "0.0.29",
-    "@types/web3": "^1.0.12",
+    "@types/web3": "^1.0.13",
     "css-loader": "^1.0.1",
     "file-loader": "^2.0.0",
     "html-webpack-plugin": "^3.2.0",
@@ -79,7 +79,7 @@
     "typechain": "^0.3.9",
     "typescript": "^3.2.1",
     "url-loader": "^1.1.2",
-    "webpack": "^4.26.1",
+    "webpack": "^4.27.0",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10"
   },

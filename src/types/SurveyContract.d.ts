@@ -7,7 +7,7 @@ import { Callback, EventLog } from 'web3/types';
 import { EventEmitter } from 'events';
 import { Provider } from 'web3/providers';
 
-export class Survey {
+export class SurveyContract {
   constructor(jsonInterface: any[], address?: string, options?: CustomOptions);
   _address: string;
   options: contractOptions;
@@ -48,11 +48,18 @@ export class Survey {
       3: string;
     }>;
 
+    getAllSurveys(): TransactionObject<{
+      0: (string)[];
+      1: (string)[];
+      2: (string)[];
+    }>;
+
     getUserSurveys(
       _admin: string
     ): TransactionObject<{
       0: (string)[];
       1: (string)[];
+      2: (string)[];
     }>;
 
     createSurvey(

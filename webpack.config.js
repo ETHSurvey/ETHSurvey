@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs");
+const webpack = require("webpack");
 
 const lessToJs = require("less-vars-to-js");
 const themeVariables = lessToJs(fs.readFileSync(path.join(__dirname, "./src/less/theme.less"), "utf8"));
@@ -124,6 +125,14 @@ module.exports = (env, argv) => {
         }
       ]
     },
+
+    plugins: [
+      new webpack.DefinePlugin({
+        'process.env': {
+          'NODE_ENV': '"' + argv.mode + '"'
+        }
+      })
+    ],
 
     resolve: {
       extensions: [".ts", ".tsx", ".js", ".json"],

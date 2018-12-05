@@ -2,7 +2,7 @@ import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
 pragma solidity ^0.4.23;
 
-contract Survey {
+contract SurveyContract {
 
     // ------- Struct for holding surveys ---
     struct survey {
@@ -126,15 +126,39 @@ contract Survey {
         return (s.name, s.amount, s.requiredResponses, s.totalResponses);
     }
 
-    function getUserSurveys(address _admin)
+    function getAllSurveys()
     public
     view
-    returns (bytes32[], uint[])
+    returns (bytes32[], bytes32[], uint[])
     {
         uint surveysCount = survey_indices.length;
 
-        // Name, Responses Count
+        // Name, Shortid, Responses Count
         bytes32[] memory names = new bytes32[](surveysCount);
+        bytes32[] memory shortids = new bytes32[](surveysCount);
+        uint[] memory totalResponses = new uint[](surveysCount);
+
+        for (uint i = 0; i < surveysCount; i++) {
+            survey memory s = Surveys[survey_indices[i]];
+
+            names[i] = stringToBytes32(s.name);
+            shortids[i] = stringToBytes32(s.shortid);
+            totalResponses[i] = s.totalResponses;
+        }
+
+        return (names, shortids, totalResponses);
+    }
+
+    function getUserSurveys(address _admin)
+    public
+    view
+    returns (bytes32[], bytes32[], uint[])
+    {
+        uint surveysCount = survey_indices.length;
+
+        // Name, Shortid, Responses Count
+        bytes32[] memory names = new bytes32[](surveysCount);
+        bytes32[] memory shortids = new bytes32[](surveysCount);
         uint[] memory totalResponses = new uint[](surveysCount);
 
         for (uint i = 0; i < surveysCount; i++) {
@@ -142,11 +166,12 @@ contract Survey {
 
             if (s.admin == _admin) {
                 names[i] = stringToBytes32(s.name);
+                shortids[i] = stringToBytes32(s.shortid);
                 totalResponses[i] = s.totalResponses;
             }
         }
 
-        return (names, totalResponses);
+        return (names, shortids, totalResponses);
     }
 
     // ------- helper functions -----------

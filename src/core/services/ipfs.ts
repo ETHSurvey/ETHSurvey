@@ -3,9 +3,21 @@ import IpfsHttpClient from 'ipfs-http-client';
 // Types
 import { IpfsFile } from '@src/types';
 
-const ipfsClient = new IpfsHttpClient('localhost', '5001', {
-  protocol: 'http'
-});
+let host: string;
+let port: string;
+let protocol: string;
+
+if (process.env.NODE_ENV === 'production') {
+  host = 'ipfs.ethsurvey.co';
+  port = '5002';
+  protocol = 'https';
+} else {
+  host = 'localhost';
+  port = '5001';
+  protocol = 'http';
+}
+
+const ipfsClient = new IpfsHttpClient({ host, port, protocol });
 
 export const ipfs = {
   createDirectory(path: string): Promise<void> {

@@ -1,5 +1,5 @@
 import { Survey } from '@src/types';
 
-export interface DashboardState {
+export interface HomeState {
   surveys: Survey[];
 }

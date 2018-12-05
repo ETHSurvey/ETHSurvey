@@ -1,7 +1,7 @@
 import { List } from 'immutable';
 import Web3 from 'web3';
 
-import SurveyArtifact from '@contracts/Survey.sol';
+import SurveyArtifact from '@contracts/SurveyContract.sol';
 
 // Types
 import { Ethereum } from '@src/types';

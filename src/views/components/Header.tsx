@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { Layout, Menu } from 'antd';
 import { Link } from 'react-router-dom';
-
-// Types
 import { RouterState } from 'react-router-redux';
 
 // Components
@@ -19,7 +17,7 @@ interface HeaderProps extends RouterState {
 }
 
 class Header extends React.Component<HeaderProps, {}> {
-  public render() {
+  render() {
     const { account, location } = this.props;
 
     return (
@@ -33,7 +31,6 @@ class Header extends React.Component<HeaderProps, {}> {
         <Menu
           theme="dark"
           mode="horizontal"
-          defaultSelectedKeys={['/']}
           selectedKeys={[location.pathname]}
           style={{ lineHeight: '64px' }}
         >

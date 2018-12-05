@@ -1,7 +1,7 @@
 import { List, Record } from 'immutable';
 import Web3 from 'web3';
 
-import { Survey } from '@src/types/Survey';
+import { SurveyContract } from '@src/types/SurveyContract';
 
 export interface State {
   accounts: List<string>;
@@ -9,7 +9,7 @@ export interface State {
   loading: boolean;
   network: string;
   networkId: number;
-  survey: Survey;
+  survey: SurveyContract;
   web3: Web3;
 }
 

@@ -5,6 +5,9 @@ import { Card, Col, Row } from 'antd';
 import { DefaultProps } from '@src/core/props';
 import { DashboardState } from '@src/core/state';
 
+// Services
+import { getSurveyList } from '@src/core/services';
+
 class Dashboard extends React.Component<DefaultProps, DashboardState> {
   constructor(props: DefaultProps) {
     super(props);
@@ -14,9 +17,24 @@ class Dashboard extends React.Component<DefaultProps, DashboardState> {
     };
   }
 
+  componentDidMount() {
+    const { web3State } = this.props;
+    const SurveyContract = web3State.get('survey');
+
+    if (SurveyContract !== null) {
+      SurveyContract.methods
+        .getUserSurveys(web3State.get('accounts').get(0))
+        .call()
+        .then(value => {
+          const surveys = getSurveyList(value);
+
+          this.setState({ surveys });
+        });
+    }
+  }
+
   componentDidUpdate(prevProps: DefaultProps) {
     const { web3State } = this.props;
-    const web3 = web3State.get('web3');
     const SurveyContract = web3State.get('survey');
 
     if (this.props !== prevProps && SurveyContract !== null) {
@@ -24,21 +42,7 @@ class Dashboard extends React.Component<DefaultProps, DashboardState> {
         .getUserSurveys(web3State.get('accounts').get(0))
         .call()
         .then(value => {
-          const count = value[0].length;
-
-          const FIELD_NAME = 0;
-          const FIELD_TOTAL_RESPONSES = 1;
-
-          const surveys = [];
-
-          for (let i = 0; i < count; i++) {
-            const s = {
-              name: web3.utils.toAscii(value[FIELD_NAME][i]),
-              totalResponses: value[FIELD_TOTAL_RESPONSES][i]
-            };
-
-            surveys.push(s);
-          }
+          const surveys = getSurveyList(value);
 
           this.setState({ surveys });
         });
