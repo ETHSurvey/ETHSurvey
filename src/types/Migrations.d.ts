@@ -44,4 +44,5 @@ export class Migrations {
     cb?: Callback<EventLog[]>
   ): Promise<EventLog[]>;
   setProvider(provider: Provider): void;
+  clone(): Migrations;
 }

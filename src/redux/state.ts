@@ -1,9 +1,9 @@
-import { RouterState } from 'react-router-redux';
+import { RouterState } from 'connected-react-router';
 
 // States
 import { Web3State } from './modules/web3';
 
 export interface RootState {
-  routerState: RouterState;
+  router: RouterState;
   web3State: Web3State;
 }

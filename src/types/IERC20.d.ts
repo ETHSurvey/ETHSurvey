@@ -74,4 +74,5 @@ export class IERC20 {
     cb?: Callback<EventLog[]>
   ): Promise<EventLog[]>;
   setProvider(provider: Provider): void;
+  clone(): IERC20;
 }

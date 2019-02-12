@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { Layout } from 'antd';
-import { Route } from 'react-router-dom';
+import { Route } from 'react-router';
 import { connect } from 'react-redux';
 
+// Components
 import Header from '@src/views/components/Header';
 
+// Redux
 import * as Web3Actions from '@src/redux/modules/web3/actions';
 import { RootState } from '@src/redux/state';
 
@@ -29,7 +31,7 @@ class EthSurvey extends React.Component<EthSurveyProps> {
   }
 
   render() {
-    const { routerState, web3State } = this.props;
+    const { router, web3State } = this.props;
 
     return (
       <Layout style={{ minHeight: '100vh' }}>
@@ -39,7 +41,7 @@ class EthSurvey extends React.Component<EthSurveyProps> {
               ? web3State.get('accounts').get(0)
               : NULL_ADDRESS
           }
-          {...routerState}
+          {...router}
         />
         {routes.map(route => (
           <Route key={route.path} {...route} />

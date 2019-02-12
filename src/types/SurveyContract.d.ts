@@ -100,4 +100,5 @@ export class SurveyContract {
     cb?: Callback<EventLog[]>
   ): Promise<EventLog[]>;
   setProvider(provider: Provider): void;
+  clone(): SurveyContract;
 }

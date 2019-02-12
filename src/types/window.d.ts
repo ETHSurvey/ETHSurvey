@@ -1,9 +1,9 @@
-import { Ethereum } from './ethereum';
-import Web3 = require('web3');
+import Web3 from 'web3';
+import { provider } from 'web3-providers';
 
 declare global {
   interface Window {
-    ethereum: Ethereum;
+    ethereum: provider;
     web3: Web3;
   }
 }

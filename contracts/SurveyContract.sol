@@ -1,6 +1,6 @@
 import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
-pragma solidity ^0.4.23;
+pragma solidity >=0.4.22 <0.6.0;
 
 contract SurveyContract {
 
@@ -48,7 +48,7 @@ contract SurveyContract {
         if (_tokenAddress != address(0)) {
             // ERC20 token
             ERC20 token = ERC20(_tokenAddress);
-            require(token.transferFrom(msg.sender, this, _amount));
+            require(token.transferFrom(msg.sender, address(this), _amount));
         } else {
             // Ether
             require(_amount == msg.value);
@@ -69,7 +69,7 @@ contract SurveyContract {
         return true;
     }
 
-    function submitSurveyResponse(string _shortid)
+    function submitSurveyResponse(string memory _shortid)
     payable
     public
     returns (bool)
@@ -109,10 +109,10 @@ contract SurveyContract {
     }
 
     // ------- getter functions -----------
-    function surveyInfo(string _shortid)
+    function surveyInfo(string memory _shortid)
     public
     view
-    returns (string, uint, uint, uint)
+    returns (string memory, uint, uint, uint)
     {
         return _surveyInfo(strToMappingIndex(_shortid));
     }
@@ -120,7 +120,7 @@ contract SurveyContract {
     function _surveyInfo(bytes32 index)
     internal
     view
-    returns (string, uint, uint, uint)
+    returns (string memory, uint, uint, uint)
     {
         survey memory s = Surveys[index];
         return (s.name, s.amount, s.requiredResponses, s.totalResponses);
@@ -129,7 +129,7 @@ contract SurveyContract {
     function getAllSurveys()
     public
     view
-    returns (bytes32[], bytes32[], uint[])
+    returns (bytes32[] memory, bytes32[] memory, uint[] memory)
     {
         uint surveysCount = survey_indices.length;
 
@@ -152,7 +152,7 @@ contract SurveyContract {
     function getUserSurveys(address _admin)
     public
     view
-    returns (bytes32[], bytes32[], uint[])
+    returns (bytes32[] memory, bytes32[] memory, uint[] memory)
     {
         uint surveysCount = survey_indices.length;
 

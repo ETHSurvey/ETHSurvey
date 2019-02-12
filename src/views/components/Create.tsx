@@ -107,7 +107,7 @@ class CreateSurvey extends React.Component<
           .createSurvey(
             values.name,
             shortid,
-            amount,
+            amount.toString(),
             values.numResponses,
             NULL_ADDRESS,
             values.expirationTime.unix().toString()
@@ -116,7 +116,7 @@ class CreateSurvey extends React.Component<
             from: account,
             value: amount
           })
-          .then(value => {
+          .then(() => {
             this.setState({ shortid, showResults: true });
             message.success('Survey has been created successfully!');
           });

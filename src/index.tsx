@@ -4,7 +4,7 @@ import * as ReactDOM from 'react-dom';
 
 // Redux
 import configureStore, { history } from './redux/store';
-import { ConnectedRouter } from 'react-router-redux';
+import { ConnectedRouter } from 'connected-react-router';
 
 // Providers
 import { LocaleProvider } from 'antd';

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Layout, Menu } from 'antd';
 import { Link } from 'react-router-dom';
-import { RouterState } from 'react-router-redux';
+import { RouterState } from 'connected-react-router';
 
 // Components
 import Identicon from '@src/views/components/Identicon';

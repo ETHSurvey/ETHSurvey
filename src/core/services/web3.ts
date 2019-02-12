@@ -4,7 +4,6 @@ import Web3 from 'web3';
 import SurveyArtifact from '@contracts/SurveyContract.sol';
 
 // Types
-import { Ethereum } from '@src/types';
 import { getContractAddress } from '@src/core/utils';
 
 export const getWeb3 = async () => {
@@ -12,14 +11,15 @@ export const getWeb3 = async () => {
 
   // modern dApp browsers
   if (window.ethereum) {
-    const ethereum = window.ethereum as Ethereum;
+    const ethereum = window.ethereum;
     web3 = new Web3(ethereum);
 
-    // try {
-    //   await ethereum.enable();
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {
+      // tslint:disable-next-line:no-any
+      await (ethereum as any).enable();
+    } catch (error) {
+      console.log(error);
+    }
   } else if (typeof window.web3 !== 'undefined') {
     // Use Mist/MetaMask's provider
     web3 = new Web3(window.web3.currentProvider);

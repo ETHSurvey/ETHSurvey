@@ -84,4 +84,5 @@ export class ERC20 {
     cb?: Callback<EventLog[]>
   ): Promise<EventLog[]>;
   setProvider(provider: Provider): void;
+  clone(): ERC20;
 }
