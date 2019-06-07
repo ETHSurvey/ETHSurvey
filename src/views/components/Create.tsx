@@ -102,6 +102,8 @@ class CreateSurvey extends React.Component<
 
         const amount = web3.utils.toWei(values.amount.toString(), 'ether');
 
+        const gasPrice = await web3.eth.getGasPrice();
+
         // Create the Survey on the Blockchain and transfer specified funds to contract
         SurveyContract.methods
           .createSurvey(
@@ -114,6 +116,7 @@ class CreateSurvey extends React.Component<
           )
           .send({
             from: account,
+            gasPrice,
             value: amount
           })
           .then(() => {

@@ -1,6 +1,6 @@
 import "openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
-pragma solidity >=0.4.22 <0.6.0;
+pragma solidity >=0.4.22 <0.7.0;
 
 contract SurveyContract {
 
@@ -38,8 +38,8 @@ contract SurveyContract {
         address _tokenAddress,
         uint _expirationTime
     )
-    payable
     public
+    payable
     returns (bool)
     {
         require(_tokenAddress == address(0) || msg.value == 0);
@@ -70,8 +70,8 @@ contract SurveyContract {
     }
 
     function submitSurveyResponse(string memory _shortid)
-    payable
     public
+    payable
     returns (bool)
     {
         survey storage s = Surveys[strToMappingIndex(_shortid)];

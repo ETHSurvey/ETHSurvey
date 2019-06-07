@@ -102,10 +102,7 @@ module.exports = (env, argv) => {
             {
               loader: "truffle-solidity-loader",
               options: {
-                migrations_directory: path.resolve(__dirname, "./migrations"),
-                network: "development",
-                // network: argv.mode === "production" ? "rinkeby" : "development",
-                contracts_build_directory: path.resolve(__dirname, "./build/contracts")
+                network: argv.mode === "production" ? "rinkeby" : "development",
               }
             }
           ]

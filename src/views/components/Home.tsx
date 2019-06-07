@@ -33,7 +33,6 @@ class Home extends React.Component<DefaultProps, HomeState> {
         .call()
         .then(value => {
           const surveys = getSurveyList(value);
-          console.log(surveys);
 
           this.setState({ surveys });
         });
@@ -50,7 +49,6 @@ class Home extends React.Component<DefaultProps, HomeState> {
         .call()
         .then(value => {
           const surveys = getSurveyList(value);
-          console.log(surveys);
 
           this.setState({ surveys });
         });
