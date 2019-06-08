@@ -13,6 +13,7 @@ module.exports = {
       network_id: 4,
       from: "0x2858b141429244dda03354aa35f1cc761a058a34",
       gas: 6712390,
+      gasPrice: 20000000000, // 20 GWei
       provider: function() {
         return new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/v3/376e0f1d1aa842a0b7252e98ec97fb64");
       },
@@ -21,6 +22,7 @@ module.exports = {
       network_id: 3,
       from: "0x2858b141429244dda03354aa35f1cc761a058a34",
       gas: 6712390,
+      gasPrice: 20000000000, // 20 GWei
       provider: function() {
         return new HDWalletProvider(mnemonic, "https://ropsten.infura.io/v3/376e0f1d1aa842a0b7252e98ec97fb64");
       },

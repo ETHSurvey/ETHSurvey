@@ -263,7 +263,7 @@ class CreateSurvey extends React.Component<
                           type: 'number'
                         }
                       ]
-                    })(<InputNumber min={1} max={1000} step={1} />)}
+                    })(<InputNumber min={0.1} max={1000} step={0.1} />)}
                   </FormItem>
 
                   <h3 className="m-top-30">Set Responses limit</h3>

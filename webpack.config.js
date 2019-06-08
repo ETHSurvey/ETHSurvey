@@ -102,7 +102,7 @@ module.exports = (env, argv) => {
             {
               loader: "truffle-solidity-loader",
               options: {
-                network: argv.mode === "production" ? "rinkeby" : "development",
+                network: argv.mode === "production" ? "ropsten" : "development",
               }
             }
           ]
