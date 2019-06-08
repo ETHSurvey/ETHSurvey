@@ -32,7 +32,7 @@ class Home extends React.Component<DefaultProps, HomeState> {
         .getAllSurveys()
         .call()
         .then(value => {
-          const surveys = getSurveyList(value);
+          const surveys = getSurveyList(value, web3State.get('web3'));
 
           this.setState({ surveys });
         });
@@ -48,7 +48,7 @@ class Home extends React.Component<DefaultProps, HomeState> {
         .getAllSurveys()
         .call()
         .then(value => {
-          const surveys = getSurveyList(value);
+          const surveys = getSurveyList(value, web3State.get('web3'));
 
           this.setState({ surveys });
         });

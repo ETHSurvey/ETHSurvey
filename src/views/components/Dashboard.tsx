@@ -26,7 +26,7 @@ class Dashboard extends React.Component<DefaultProps, DashboardState> {
         .getUserSurveys(web3State.get('accounts').get(0))
         .call()
         .then(value => {
-          const surveys = getSurveyList(value);
+          const surveys = getSurveyList(value, web3State.get('web3'));
 
           this.setState({ surveys });
         });
@@ -42,7 +42,8 @@ class Dashboard extends React.Component<DefaultProps, DashboardState> {
         .getUserSurveys(web3State.get('accounts').get(0))
         .call()
         .then(value => {
-          const surveys = getSurveyList(value);
+          const surveys = getSurveyList(value, web3State.get('web3'));
+          console.log(surveys);
 
           this.setState({ surveys });
         });

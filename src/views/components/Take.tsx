@@ -65,7 +65,7 @@ class TakeSurvey extends React.Component<DefaultProps, TakeSurveyState> {
         // console.log(responses);
       } catch (err) {
         console.error(err);
-        message.error('Error while creating Survey: ' + err.message);
+        message.error('Error while fetching survey details: ' + err.message);
       }
     }
   }
