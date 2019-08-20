@@ -80,8 +80,6 @@ class TakeSurvey extends React.Component<DefaultProps, TakeSurveyState> {
   }
 
   onSubmitSurvey() {
-    console.log(this.state);
-
     const { match, web3State } = this.props;
 
     const account = web3State.get('accounts').get(0);

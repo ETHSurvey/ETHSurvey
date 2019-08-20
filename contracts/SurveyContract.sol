@@ -24,6 +24,7 @@ contract SurveyContract {
     }
 
     mapping(bytes32 => survey) public Surveys;
+    mapping(address => bytes32[]) public UserSurveys;
     uint public numSurveys = 0;
     bytes32[] public survey_indices;
 
@@ -55,14 +56,18 @@ contract SurveyContract {
             require(msg.value > 0);
         }
 
+        // Survey index
+        bytes32 surveyIndex = strToMappingIndex(_shortid);
+
         // shortid must be unique
-        require(Surveys[strToMappingIndex(_shortid)].admin == address(0));
+        require(Surveys[surveyIndex].admin == address(0));
 
         // create survey
         survey memory s = survey(_amount, _requiredResponses, msg.sender, now, _expirationTime, _name, _shortid, _tokenAddress, _amount, 0);
 
-        Surveys[strToMappingIndex(_shortid)] = s;
-        survey_indices.push(strToMappingIndex(_shortid));
+        Surveys[surveyIndex] = s;
+        UserSurveys[msg.sender].push(surveyIndex);
+        survey_indices.push(surveyIndex);
 
         numSurveys += 1;
 
@@ -74,7 +79,8 @@ contract SurveyContract {
     payable
     returns (bool)
     {
-        survey storage s = Surveys[strToMappingIndex(_shortid)];
+        bytes32 surveyIndex = strToMappingIndex(_shortid);
+        survey storage s = Surveys[surveyIndex];
 
         // Check if surveyee is the survey owner
         require(s.admin != msg.sender);
@@ -103,7 +109,7 @@ contract SurveyContract {
 
         s.remainingAmount -= _value;
 
-        Surveys[strToMappingIndex(_shortid)] = s;
+        Surveys[surveyIndex] = s;
 
         return true;
     }
@@ -154,7 +160,7 @@ contract SurveyContract {
     view
     returns (bytes32[] memory, bytes32[] memory, uint[] memory)
     {
-        uint surveysCount = survey_indices.length;
+        uint surveysCount = UserSurveys[_admin].length;
 
         // Name, Shortid, Responses Count
         bytes32[] memory names = new bytes32[](surveysCount);
@@ -162,13 +168,12 @@ contract SurveyContract {
         uint[] memory totalResponses = new uint[](surveysCount);
 
         for (uint i = 0; i < surveysCount; i++) {
-            survey memory s = Surveys[survey_indices[i]];
+            bytes32 surveyIndex = UserSurveys[_admin][i];
+            survey memory s = Surveys[surveyIndex];
 
-            if (s.admin == _admin) {
-                names[i] = stringToBytes32(s.name);
-                shortids[i] = stringToBytes32(s.shortid);
-                totalResponses[i] = s.totalResponses;
-            }
+            names[i] = stringToBytes32(s.name);
+            shortids[i] = stringToBytes32(s.shortid);
+            totalResponses[i] = s.totalResponses;
         }
 
         return (names, shortids, totalResponses);

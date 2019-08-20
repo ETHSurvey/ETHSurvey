@@ -11,7 +11,6 @@ import {
   Row,
   Steps
 } from 'antd';
-import moment from 'moment';
 
 // Components
 import AddFormField from './AddFormField';
